@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->bigIncrements("idUser");
-            $table->string('username');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->rememberToken();
+        Schema::create('printers', function (Blueprint $table) {
+            $table->bigIncrements("idPrinter");
+            $table->string('model', 60);
+            $table->string('serialNumber', 100);
+            $table->integer('cti')->length(6);
             $table->timestamp("created_at")->useCurrent();
+            $table->softDeletes();
         });
     }
 
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('printers');
     }
 };

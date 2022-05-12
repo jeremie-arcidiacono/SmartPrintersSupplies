@@ -13,13 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->bigIncrements("idUser");
-            $table->string('username');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamp("created_at")->useCurrent();
+        Schema::create('printer_supply', function (Blueprint $table) {
+            $table->foreignId('printer_idPrinter')->constrained('printers', 'idPrinter');
+            $table->foreignId('supply_idSupply')->constrained('supplies', 'idSupply');
         });
     }
 
@@ -30,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('printer_supply');
     }
 };
