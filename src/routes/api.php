@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\api\PrinterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,3 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+Route::get('/printers', [PrinterController::class, 'index'])->name('printers.index');
+Route::get('/printers/{printer}', [PrinterController::class, 'show'])->name('printers.show');
+Route::post('/printers', [PrinterController::class, 'store'])->name('printers.store');
+Route::put('/printers/{printer}', [PrinterController::class, 'update'])->name('printers.update');
+Route::delete('/printers/{printer}', [PrinterController::class, 'destroy'])->name('printers.destroy')->withTrashed();;
