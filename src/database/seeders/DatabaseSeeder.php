@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\PrinterModel;
 use App\Models\Printer;
 use App\Models\Supply;
 use App\Models\User;
@@ -19,8 +20,9 @@ class DatabaseSeeder extends Seeder
     {
         User::factory(3)->create();
 
-        Printer::factory(30)
-            ->has(Supply::factory()->count(2))
+        PrinterModel::factory(10)
+            ->has(Printer::factory()->count(3))
+            ->has(Supply::factory()->count(5))
             ->create();
     }
 }

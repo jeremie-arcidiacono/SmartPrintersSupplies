@@ -13,14 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('printers', function (Blueprint $table) {
-            $table->bigIncrements("idPrinter");
-            $table->string('serialNumber', 100)->unique();
-            $table->integer('cti')->length(6)->unique();
-            $table->timestamp("created_at")->useCurrent();
+        Schema::create('printerModels', function (Blueprint $table) {
+            $table->bigIncrements("idPrinterModel");
+            $table->string('name', 60)->unique();
             $table->softDeletes();
-
-            $table->foreignId('printer_model_idPrinterModel')->constrained('printerModels', 'idPrinterModel');
         });
     }
 
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('printers');
+        Schema::dropIfExists('printerModels');
     }
 };

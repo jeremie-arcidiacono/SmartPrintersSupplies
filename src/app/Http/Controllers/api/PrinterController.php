@@ -35,7 +35,7 @@ class PrinterController extends Controller
         if ($request->query('perPage') && is_numeric($request->query('perPage')))
             $nbPerPage = $request->query('perPage');
         else
-            $nbPerPage = config('printers.per_page');
+            $nbPerPage = config('modelQuery.perPage');
 
         // Get the sorting options from the GET parameter
         if ($request->query('sort')) {
@@ -44,7 +44,7 @@ class PrinterController extends Controller
                 $sortDir = $request->query('dir');
             }
             else {
-                $sortDir = config('printers.sort_order');
+                $sortDir = config('modelQuery.sortOrder');
             }
         }
 
@@ -70,7 +70,7 @@ class PrinterController extends Controller
                 $printers = Printer::paginate($nbPerPage);
             }
         }
-
+        
         return new JsonResponse($printers, 200);
     }
 
@@ -93,7 +93,7 @@ class PrinterController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'model' => ['required', 'string', 'max:60'],
+            'idModel' => ['required', 'numeric', 'exists:App\Models\PrinterModel,idPrinterModel'],
             'serialNumber' => ['required', 'string', 'max:100', 'unique:printers'],
             'cti' => ['required', 'integer', 'digits:6', 'unique:printers']
         ]);
@@ -106,7 +106,7 @@ class PrinterController extends Controller
 
             $printer = new Printer;
 
-            $printer->model = $validated['model'];
+            $printer->printer_model_idPrinterModel = $validated['idModel'];
             $printer->serialNumber = $validated['serialNumber'];
             $printer->cti = $validated['cti'];
 
@@ -124,7 +124,7 @@ class PrinterController extends Controller
     public function update(Request $request, Printer $printer)
     {
         $validator = Validator::make($request->all(), [
-            'model' => ['string', 'max:60'],
+            'idModel' => ['numeric', 'exists:App\Models\PrinterModel,idPrinterModel'],
             'serialNumber' => ['string', 'max:100', Rule::unique('printers')->ignore($printer)],
             'cti' => ['integer', 'digits:6', Rule::unique('printers')->ignore($printer)]
         ]);
@@ -135,8 +135,8 @@ class PrinterController extends Controller
         else {
             $validated = $validator->validated();
 
-            if ($request->has('model')) {
-                $printer->model = $validated['model'];
+            if ($request->has('idModel')) {
+                $printer->printer_model_idPrinterModel = $validated['idModel'];
             }
             if ($request->has('serialNumber')) {
                 $printer->serialNumber = $validated['serialNumber'];

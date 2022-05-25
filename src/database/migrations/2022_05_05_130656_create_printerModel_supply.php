@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('printer_supply', function (Blueprint $table) {
-            $table->foreignId('printer_idPrinter')->constrained('printers', 'idPrinter');
-            $table->foreignId('supply_idSupply')->constrained('supplies', 'idSupply');
+        Schema::create('printerModel_supply', function (Blueprint $table) {
+            $table->foreignId('idPrinterModel')->constrained('printerModels', 'idPrinterModel');
+            $table->foreignId('idSupply')->constrained('supplies', 'idSupply');
         });
     }
 
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('printer_supply');
+        Schema::dropIfExists('printerModel_supply');
     }
 };
