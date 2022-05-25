@@ -143,4 +143,60 @@ class PrinterModelController extends Controller
             }
         }  
     }
+
+    /**
+     * Returns the list of supplies used by the printer model.
+     * @param  PrinterModel $printerModel
+     * @return JsonResponse
+     */
+    public function indexCompatibility(PrinterModel $printerModel): JsonResponse
+    {
+        return new JsonResponse(['data' => $printerModel->supplies], 200);
+    }
+
+    /**
+     * Adds a supply to the printer model.
+     * @param  Request $request
+     * @param  PrinterModel $printerModel
+     * @return JsonResponse
+     */
+    public function storeCompatibility(Request $request, PrinterModel $printerModel): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'idSupply' => ['required', 'numeric', 'exists:supplies,idSupply'],
+        ]);
+
+        if ($validator->fails()) {
+            return new JsonResponse(['errors' => $validator->errors()->messages()], 422);
+        }
+        else {
+            $validated = $validator->validated();
+
+            $printerModel->supplies()->attach($validated['idSupply']);
+            return new JsonResponse([], 200);
+        }
+    }
+
+    /**
+     * Removes a supply from the printer model.
+     * @param  Request $request
+     * @param  PrinterModel $printerModel
+     * @return JsonResponse
+     */
+    public function destroyCompatibility(Request $request, PrinterModel $printerModel): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'idSupply' => ['required', 'numeric', 'exists:supplies,idSupply'],
+        ]);
+
+        if ($validator->fails()) {
+            return new JsonResponse(['errors' => $validator->errors()->messages()], 422);
+        }
+        else {
+            $validated = $validator->validated();
+
+            $printerModel->supplies()->detach($validated['idSupply']);
+            return new JsonResponse([], 200);
+        }
+    }
 }
