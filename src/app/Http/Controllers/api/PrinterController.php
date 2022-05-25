@@ -21,7 +21,7 @@ class PrinterController extends Controller
      * Returns a list of printers
      * Client can set optional GET parameters:
      *   - perPage: number of printers per page
-     *   - sortrder: sort column of printers
+     *   - sortOrder: sort column of printers
      *     - dir: sort direction (asc or desc)
      *   - search: search string
      *     - searchColumn: column to search in
@@ -35,7 +35,7 @@ class PrinterController extends Controller
         if ($request->query('perPage') && is_numeric($request->query('perPage')))
             $nbPerPage = $request->query('perPage');
         else
-            $nbPerPage = config('modelQuery.perPage');
+            $nbPerPage = config('modelQuery.printer_perPage');
 
         // Get the sorting options from the GET parameter
         if ($request->query('sort')) {
@@ -44,7 +44,7 @@ class PrinterController extends Controller
                 $sortDir = $request->query('dir');
             }
             else {
-                $sortDir = config('modelQuery.sortOrder');
+                $sortDir = config('modelQuery.printer_sortOrder');
             }
         }
 
