@@ -38,37 +38,18 @@ class PrinterController extends Controller
             $nbPerPage = config('modelQuery.printer_perPage');
 
         // Get the sorting options from the GET parameter
-        if ($request->query('sort')) {
-            $sortColumn = $request->query('sort');
-            if ($request->query('dir') && $request->query('dir') !== "") {
-                $sortDir = $request->query('dir');
-            }
-            else {
-                $sortDir = config('modelQuery.printer_sortOrder');
-            }
-        }
+        $sortColumn = $request->query('sort') ?: config('modelQuery.printer_sortColumn');
+        $sortDir = $request->query('dir') ?: config('modelQuery.printer_sortOrder');
 
         if($request->query('search')){
             // Send printers where a column contains the search term
             $searchTerm = $request->query('search');
             $searchColumn = $request->query('searchColumn');
 
-            if (isset($sortColumn)) {
-                $printers = Printer::where($searchColumn, 'like', '%' . $searchTerm . '%')->orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
-            }
-            else {
-                // No sort parameter: the printers are sent without being ordered
-                $printers = Printer::where($searchColumn, 'like', '%' . $searchTerm . '%')->paginate($nbPerPage);
-            }
+            $printers = Printer::where($searchColumn, 'like', '%' . $searchTerm . '%')->orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
         }
         else {
-            // No search parameter: all printers are sent
-            if (isset($sortColumn)) {
-                $printers = Printer::orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
-            }
-            else {
-                $printers = Printer::paginate($nbPerPage);
-            }
+            $printers = Printer::orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
         }
         
         return new JsonResponse($printers, 200);

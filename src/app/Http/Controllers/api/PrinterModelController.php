@@ -34,32 +34,20 @@ class PrinterModelController extends Controller
         else
             $nbPerPage = config('modelQuery.printerModel_perPage');
 
-        // Get the sorting options from the GET parameter
-        if ($request->query('dir') && $request->query('dir') !== "") {
-            $sortDir = $request->query('dir');
-        }
-        else {
-            $sortDir = config('modelQuery.printerModel_sortOrder');
-        }
+        // Get the sorting option from the GET parameter
+        $sortDir = $request->query('dir') ?: config('modelQuery.printerModel_sortOrder');
 
         if($request->query('search')){
             // Send models where the name contains the search term
             $searchTerm = $request->query('search');
 
-                // No sort parameter: the models are sent without being ordered
-            $printerModel = PrinterModel::where('name', 'like', '%' . $searchTerm . '%')->paginate($nbPerPage);
+            $printerModels = PrinterModel::where('name', 'like', '%' . $searchTerm . '%')->orderBy('name', $sortDir)->paginate($nbPerPage);
         }
         else {
-            // No search parameter: all models are sent
-            if (isset($sortDir)) {
-                $printerModel = PrinterModel::orderBy('name', $sortDir)->paginate($nbPerPage);
-            }
-            else {
-                $printerModel = PrinterModel::paginate($nbPerPage);
-            }
+            $printerModels = PrinterModel::orderBy('name', $sortDir)->paginate($nbPerPage);
         }
         
-        return new JsonResponse($printerModel, 200);
+        return new JsonResponse($printerModels, 200);
     }
 
     /**
