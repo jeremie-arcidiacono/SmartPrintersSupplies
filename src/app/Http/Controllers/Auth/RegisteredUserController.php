@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use App\Http\Controllers\api\EventController;
 
 class RegisteredUserController extends Controller
 {
@@ -47,6 +48,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
+        EventController::store(Auth::id(), 'userCreated', ['idUser' => $user->idUser]);
 
         return view('auth.register', ['successful' => true]);
     }

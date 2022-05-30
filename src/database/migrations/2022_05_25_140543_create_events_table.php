@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigIncrements("idEvent");
             $table->foreignId('idUser_author')->constrained('users', 'idUser');
 
-            $table->enum('action', ['info', 'create', 'delete', 'changeAmount']);
+            $table->enum('action', ['info', 'create', 'delete', 'changeAmount', 'userCreated']);
             $table->string('comment', 255)->nullable();
             $table->integer('amount')->nullable();
             
