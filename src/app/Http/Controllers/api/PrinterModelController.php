@@ -83,6 +83,8 @@ class PrinterModelController extends Controller
             $printerModel->name = $validated['name'];
 
             $printerModel->save();
+            
+            EventController::store(Auth::id(), 'create', ['idModel' => $printerModel->idPrinterModel]);
             return new JsonResponse([], 200);
         }
     }
@@ -127,6 +129,7 @@ class PrinterModelController extends Controller
             }
             else {
                 $printerModel->delete();
+                EventController::store(Auth::id(), 'delete', ['idModel' => $printerModel->idPrinterModel]);
                 return new JsonResponse([], 200);
             }
         }  

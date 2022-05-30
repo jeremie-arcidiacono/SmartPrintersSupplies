@@ -92,6 +92,8 @@ class PrinterController extends Controller
             $printer->cti = $validated['cti'];
 
             $printer->save();
+
+            EventController::store(Auth::id(), 'create', ['idPrinter' => $printer->idPrinter]);
             return new JsonResponse([], 200);
         }
     }
@@ -143,6 +145,7 @@ class PrinterController extends Controller
         }
         else {
             $printer->delete();
+            EventController::store(Auth::id(), 'delete', ['idPrinter' => $printer->idPrinter]);
             return new JsonResponse([], 200);
         }  
     }

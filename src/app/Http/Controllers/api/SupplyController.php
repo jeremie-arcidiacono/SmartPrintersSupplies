@@ -98,6 +98,8 @@ class SupplyController extends Controller
             $supply->quantity = $validated['quantity'];
 
             $supply->save();
+
+            EventController::store(Auth::id(), 'create', ['idSupply' => $supply->idSupply]);
             return new JsonResponse([], 200);
         }
     }
@@ -114,7 +116,8 @@ class SupplyController extends Controller
             'code' => ['string', 'max:20', Rule::unique('supplies')->ignore($supply)],
             'quantity' => ['integer', 'min:0'],
             'addQuantity' => ['integer', 'min:0'],
-            'removeQuantity' => ['integer', 'min:0']
+            'removeQuantity' => ['integer', 'min:0'],
+            'idPrinter' => ['integer', 'exists:App\Models\Printer,idPrinter']
         ]);
 
         if ($validator->fails()) {
@@ -126,16 +129,20 @@ class SupplyController extends Controller
             if ($request->has('code')) {
                 $supply->code = $validated['code'];
             }
-            if ($request->has('quantity')) {
-                $supply->quantity = $validated['quantity'];
-            }
-            if ($request->has('addQuantity')) {
-                $supply->quantity += $validated['addQuantity'];
-            }
-            if ($request->has('removeQuantity')) {
-                $supply->quantity -= $validated['removeQuantity'];
-            }
 
+            if ($request->has('quantity')) {
+                EventController::store(Auth::id(), 'changeAmount', ['idSupply' => $supply->idSupply], $validated['quantity'] - $supply->quantity);
+                $supply->quantity = $validated['quantity'];
+            } 
+            else if ($request->has('addQuantity')) {
+                $supply->quantity += $validated['addQuantity'];
+                EventController::store(Auth::id(), 'changeAmount', ['idSupply' => $supply->idSupply, 'idPrinter' => $validated['idPrinter']], $validated['addQuantity']);
+            } 
+            else if ($request->has('removeQuantity')) {
+                $supply->quantity -= $validated['removeQuantity'];
+                EventController::store(Auth::id(), 'changeAmount', ['idSupply' => $supply->idSupply, 'idPrinter' => $validated['idPrinter']], -$validated['removeQuantity']);
+            }
+            
             $supply->save();
             return new JsonResponse([], 200);
         }
@@ -153,6 +160,7 @@ class SupplyController extends Controller
         }
         else {
             $supply->delete();
+            EventController::store(Auth::id(), 'delete', ['idSupply' => $supply->idSupply]);
             return new JsonResponse([], 200);
         }
     }

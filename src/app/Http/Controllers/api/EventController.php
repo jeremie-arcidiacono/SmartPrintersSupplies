@@ -68,5 +68,52 @@ class EventController extends Controller
         return new JsonResponse(['data' => $event], 200);
     }
 
+    /**
+     * Stores a event in the database
+     * @param  int $idAuthor
+     * @param  string $action
+     * @param  string $comment
+     * @param  int $amount
+     * @param  array $arrTargets
+     * @return bool
+     */
+    public static function store(int $idAuthor, string $action, array $arrTargets = [], int $amount = null, string $comment = null): bool
+    {
+        $targetValidator = Validator::make($arrTargets, [
+            'idPrinter' => ['numeric', 'exists:App\Models\Printer,idPrinter'],
+            'idSupply' => ['numeric', 'exists:App\Models\Supply,idSupply'],
+            'idModel' => ['numeric', 'exists:App\Models\PrinterModel,idPrinterModel'],
+            'idUser' => ['numeric', 'exists:App\Models\User,idUser'],
+        ]);
+
+        if ($targetValidator->fails()) {
+            Log::error("Invalid target for event, validator errors:"  . json_encode($targetValidator->errors()->messages()) . ", targets: " . json_encode($arrTargets));
+            return false;
+        }
+        else{
+            $event = new Event();
+
+            $event->idUser_author = $idAuthor;
+            $event->action = $action;
+            $event->comment = $comment;
+            $event->amount = $amount;
+    
+            if (array_key_exists('idPrinter', $arrTargets)) {
+                $event->idPrinter_target = $arrTargets['idPrinter'];
+            }
+            if (array_key_exists('idSupply', $arrTargets)) {
+                $event->idSupply_target = $arrTargets['idSupply'];
+            }
+            if (array_key_exists('idModel', $arrTargets)) {
+                $event->idPrinterModel_target = $arrTargets['idModel'];
+            }
+            if (array_key_exists('idUser', $arrTargets)) {
+                $event->idUser_target = $arrTargets['idUser'];
+            }
+    
+            $event->save();
+            return true;    
+        }
+    }
     
 }
