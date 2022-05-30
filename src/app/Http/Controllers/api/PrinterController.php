@@ -154,6 +154,6 @@ class PrinterController extends Controller
      */
     public function events(Printer $printer): JsonResponse
     {
-        return new JsonResponse(['data' => $printer->events()->latest()->take(15)->get()], 200);
+        return new JsonResponse(['data' => $printer->events()->latest()->take(config('modelQuery.printer_nbEvent'))->get()], 200);
     }
 }
