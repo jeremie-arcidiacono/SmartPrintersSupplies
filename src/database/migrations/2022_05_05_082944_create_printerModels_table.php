@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('printerModels', function (Blueprint $table) {
             $table->bigIncrements("idPrinterModel");
             $table->string('name', 60)->unique();
+            $table->timestamp("created_at")->useCurrent();
             $table->softDeletes();
         });
     }
