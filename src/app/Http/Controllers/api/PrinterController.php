@@ -146,4 +146,14 @@ class PrinterController extends Controller
             return new JsonResponse([], 200);
         }  
     }
+
+    /**
+     * Return a list of the recents events of a printer
+     * @param  Printer $printer
+     * @return JsonResponse
+     */
+    public function events(Printer $printer): JsonResponse
+    {
+        return new JsonResponse(['data' => $printer->events()->latest()->take(15)->get()], 200);
+    }
 }
