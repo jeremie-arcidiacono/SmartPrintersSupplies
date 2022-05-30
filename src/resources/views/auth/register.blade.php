@@ -8,15 +8,16 @@
 
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
+        <x-auth-registered-successfully class="mb-4" :successful="$successful" />
 
         <form method="POST" action="{{ route('register') }}">
             @csrf
 
             <!-- Name -->
             <div>
-                <x-label for="name" :value="__('Name')" />
+                <x-label for="username" :value="__('Name')" />
 
-                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
+                <x-input id="username" class="block mt-1 w-full" type="text" name="username" :value="old('username')" required autofocus />
             </div>
 
             <!-- Email Address -->
@@ -46,10 +47,6 @@
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
-                </a>
-
                 <x-button class="ml-4">
                     {{ __('Register') }}
                 </x-button>
