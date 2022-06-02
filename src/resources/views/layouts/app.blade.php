@@ -44,7 +44,7 @@
             </header>
 
             <!-- Page Content -->
-            <main class="float-end">
+            <main class="float-end px-4">
                 {{ $slot }}
             </main>
 

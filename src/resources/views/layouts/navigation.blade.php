@@ -1,4 +1,4 @@
-<nav class="d-flex flex-column flex-shrink-0 p-3 bg-light float-start" style="width: 17%; position: absolute; height: 100%;">
+<nav class="d-flex flex-column flex-shrink-0 p-3 bg-light float-start" style="width: 17%; position: fixed; height: 100%;">
     <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
         <x-application-logo class="bi pe-none me-2" width="40" height="32"/>
         <span class="fs-4">Smart Printers Supplies</span>
