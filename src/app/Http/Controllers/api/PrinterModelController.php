@@ -20,7 +20,8 @@ class PrinterModelController extends Controller
      * Returns a list of models
      * Client can set optional GET parameters:
      *   - perPage: number of models per page
-     *   - dir: sort direction (asc or desc)
+     *   - sortOrder: sort column of models
+     *     - dir: sort direction (asc or desc)
      *   - search: search string
      * 
      * @param  Request $request
@@ -35,16 +36,17 @@ class PrinterModelController extends Controller
             $nbPerPage = config('modelQuery.printerModel_perPage');
 
         // Get the sorting option from the GET parameter
+        $sortColumn = $request->query('sort') ?: config('modelQuery.printerModel_sortColumn');
         $sortDir = $request->query('dir') ?: config('modelQuery.printerModel_sortOrder');
 
         if($request->query('search')){
             // Send models where the name contains the search term
             $searchTerm = $request->query('search');
 
-            $printerModels = PrinterModel::where('name', 'like', '%' . $searchTerm . '%')->orderBy('name', $sortDir)->paginate($nbPerPage);
+            $printerModels = PrinterModel::where('name', 'like', '%' . $searchTerm . '%')->orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
         }
         else {
-            $printerModels = PrinterModel::orderBy('name', $sortDir)->paginate($nbPerPage);
+            $printerModels = PrinterModel::orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
         }
         
         return new JsonResponse($printerModels, 200);

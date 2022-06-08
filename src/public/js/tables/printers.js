@@ -28,7 +28,7 @@ function displayPrintersTable(data) {
     displayPagination(data);
 }
 
-function refreshPrintersTable(){
+function refreshTable(){
     var url = baseURL;
 
     url += '?page=' + currentPage;
@@ -52,5 +52,5 @@ function searchChanged() {
     search = $('#search').val();
 
     currentPage = 1;
-    refreshPrintersTable();
+    refreshTable();
 }

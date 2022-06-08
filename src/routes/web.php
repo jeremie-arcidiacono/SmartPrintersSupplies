@@ -26,4 +26,8 @@ Route::get('/printers', function () {
     return view('tables.printers');
 })->middleware(['auth'])->name('printers.index');
 
+Route::get('/models', function () {
+    return view('tables.models');
+})->middleware(['auth'])->name('models.index');
+
 require __DIR__.'/auth.php';

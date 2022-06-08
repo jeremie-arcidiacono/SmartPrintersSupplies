@@ -51,7 +51,7 @@ function sortChanged(column) {
         }
     }
     
-    refreshPrintersTable();
+    refreshTable();
 }
 
 // Event - When the user click on a pagination button
@@ -59,7 +59,7 @@ function sortChanged(column) {
 function pageChanged(newPage) {
     if (newPage != currentPage) {
         currentPage = newPage;
-        refreshPrintersTable();
+        refreshTable();
     }
 }
 
@@ -69,5 +69,5 @@ function perPageChanged(newPerPage) {
     perPage = newPerPage;
 
     currentPage = 1;
-    refreshPrintersTable();
+    refreshTable();
 }

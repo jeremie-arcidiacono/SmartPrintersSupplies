@@ -8,7 +8,8 @@ return [
     'printer_nbEvent' => 15,      // Default number of events to display on the detail page of a printer
 
     'printerModel_perPage' => 25,     // Default number of models per page
-    'printerModel_sortOrder' => 'asc', // Default sortBy order
+    'printerModel_sortOrder' => 'desc', // Default sortBy order
+    'printerModel_sortColumn' => 'idPrinterModel', // Default sortBy column
 
     'supply_perPage' => 25,     // Default number of supplies per page
     'supply_sortOrder' => 'desc', // Default sortBy order
