@@ -83,5 +83,7 @@ function btnDeleteClicked(id, sendUrl) {
 // Event - When the user click on the delete confirmation button in the modal
 function deleteItem(url) {
     $(`#deleteModal`).modal("hide");
-    callApiDelete(url, refreshTable);
+    callApiDelete(url, refreshTable, function(data) {
+        alert(data.errors);
+    });
 }

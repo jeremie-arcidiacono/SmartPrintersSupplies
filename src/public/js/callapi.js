@@ -55,16 +55,21 @@ function callApiPut(url, data, callback, errorCallback) {
     });
 }
 
-function callApiDelete(url, callback) {
+function callApiDelete(url, callback, errorCallback) {
     $.ajax({
         url: url,
         type: 'DELETE',
         success: function (data) {
             callback(data);
         },
-        error: function () {
-            alert('Une erreur est survenu lors de la suppression des informations');
-            console.error('Error while calling API (URL : ' + url + ')');
+        error: function (xhr, ajaxOptions, thrownError) {
+            if (xhr.status != 422) {
+                alert('Une erreur est survenu lors de la suppression des informations');
+                console.error('Error while calling API (URL : ' + url + ')');
+            }
+            if (errorCallback != null) {
+                errorCallback(xhr.responseJSON);
+            }
         }
     });
 }

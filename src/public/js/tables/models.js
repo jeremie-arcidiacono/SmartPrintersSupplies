@@ -18,9 +18,10 @@ function displayModelsTable(data) {
             var modelName = model.name;
 
             var urlEdit = '/models/' + modelId + '/edit';
-            var modelActions = '<a href="' + urlEdit + '" class="btn btn-primary btn-xs"><i class="bi bi-pencil-fill"></i></a>' +
-                '<a href="#" class="btn btn-danger btn-xs" onclick=""><i class="bi bi-trash3-fill"></i></a>';
-                tableBody.append('<tr><td>' + modelId + '</td><td>' + modelName + '</td><td>' + modelActions + '</td></tr>');
+            var urlDelete = '/api/models/' + modelId;
+            var modelActions = `<a href="${urlEdit}" class="btn btn-primary btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
+                `<button class="btn btn-danger btn-xs" onclick="btnDeleteClicked(${modelId}, '${urlDelete}')"><i class="bi bi-trash3-fill"></i></button>`;
+            tableBody.append(`<tr><td>${modelId}</td><td>${modelName}</td><td>${modelActions}</td></tr>`);        
         }
     }
     displayPagination(data);
