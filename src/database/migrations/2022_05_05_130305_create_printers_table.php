@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('printers', function (Blueprint $table) {
             $table->bigIncrements("idPrinter");
+            $table->string("room")->nullable();
             $table->string('serialNumber', 100)->unique();
             $table->integer('cti')->length(6)->unique();
             $table->timestamp("created_at")->useCurrent();

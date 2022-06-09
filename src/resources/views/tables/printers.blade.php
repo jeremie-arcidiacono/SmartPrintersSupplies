@@ -31,6 +31,7 @@
                 <select class="form-select-sm" id="searchColumn" onchange="searchChanged()">
                     <option value="serialNumber" selected="selected" >Numéro de série</option>
                     <option value="cti">CTI</option>
+                    <option value="room">Salle</option>
                 </select>
             </div>
             <input type="text" class="form-control mt-2" placeholder="Rechercher..." id="search" style="max-width: 370px;" oninput="searchChanged()">
@@ -47,6 +48,10 @@
                         <i class="bi bi-arrow-down" id="sort_down_idPrinter" style="color: rgb(183, 183, 207);"></i>
                     </th>
                     <th scope="col">Modèle</th>
+                    <th scope="col" onclick="sortChanged('room')">Salle
+                        <i class="bi bi-arrow-up ps-1" id="sort_up_room" style="color: rgb(183, 183, 207);"></i>
+                        <i class="bi bi-arrow-down" id="sort_down_room" style="color: rgb(183, 183, 207);"></i>
+                    </th>
                     <th scope="col" onclick="sortChanged('serialNumber')">Numéro de série
                         <i class="bi bi-arrow-up ps-1" id="sort_up_serialNumber" style="color: rgb(183, 183, 207);"></i>
                         <i class="bi bi-arrow-down" id="sort_down_serialNumber"style="color: rgb(183, 183, 207);"></i>

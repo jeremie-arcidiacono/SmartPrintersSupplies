@@ -17,6 +17,7 @@ function loadPrinter(printerUrl) {
     callApiGet(printerUrl, function(data) {
         var printer = data.data;
         $('#modelList').val(printer.model.idPrinterModel);
+        $('#room').val(printer.room);
         $('#serialNumber').val(printer.serialNumber);
         $('#cti').val(printer.cti);
     });
@@ -45,6 +46,7 @@ function validateInput(idModel, serialNumber, cti) {
 
 function submit() {
     var idModel = $('#modelList').val();
+    var room = $('#room').val();
     var serialNumber = $('#serialNumber').val();
     var cti = $('#cti').val();
 
@@ -68,6 +70,7 @@ function submit() {
     else {
         var data = {
             idModel: idModel,
+            room: room,
             serialNumber: serialNumber,
             cti: cti
         }
@@ -88,6 +91,7 @@ function succes(data) {
 
     if (MODE == 'create') {
         $('#modelList').val('');
+        $('#room').val('');
         $('#serialNumber').val('');
         $('#cti').val('');
     }

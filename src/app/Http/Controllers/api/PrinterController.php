@@ -75,6 +75,7 @@ class PrinterController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'idModel' => ['required', 'numeric', 'exists:App\Models\PrinterModel,idPrinterModel'],
+            'room' => ['nullable', 'string', 'max:50'],
             'serialNumber' => ['required', 'string', 'max:100', 'unique:printers'],
             'cti' => ['required', 'integer', 'digits:6', 'unique:printers']
         ]);
@@ -88,6 +89,7 @@ class PrinterController extends Controller
             $printer = new Printer;
 
             $printer->printer_model_idPrinterModel = $validated['idModel'];
+            $printer->room = $validated['room'];
             $printer->serialNumber = $validated['serialNumber'];
             $printer->cti = $validated['cti'];
 
@@ -108,6 +110,7 @@ class PrinterController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'idModel' => ['numeric', 'exists:App\Models\PrinterModel,idPrinterModel'],
+            'room' => ['nullable', 'string', 'max:50'],
             'serialNumber' => ['string', 'max:100', Rule::unique('printers')->ignore($printer)],
             'cti' => ['integer', 'digits:6', Rule::unique('printers')->ignore($printer)]
         ]);
@@ -120,6 +123,9 @@ class PrinterController extends Controller
 
             if ($request->has('idModel')) {
                 $printer->printer_model_idPrinterModel = $validated['idModel'];
+            }
+            if ($request->has('room')) {
+                $printer->room = $validated['room'];
             }
             if ($request->has('serialNumber')) {
                 $printer->serialNumber = $validated['serialNumber'];

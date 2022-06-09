@@ -20,6 +20,10 @@
                 </select>
             </div>
             <div class="form-group">
+                <label for="room">Salle</label>
+                <input type="text" class="form-control" id="room" name="room" placeholder="Salle">
+            </div>
+            <div class="form-group">
                 <label for="serialNumber">Numéro de série</label>
                 <input type="text" class="form-control" id="serialNumber" name="serialNumber" placeholder="Numéro de série" required>
             </div>
