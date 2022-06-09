@@ -20,9 +20,10 @@ function displayPrintersTable(data) {
             var printerCti = printer.cti;
 
             var urlEdit = '/printers/' + printerId + '/edit';
-            var printerActions = '<a href="' + urlEdit + '" class="btn btn-primary btn-xs"><i class="bi bi-pencil-fill"></i></a>' +
-                '<a href="#" class="btn btn-danger btn-xs" onclick=""><i class="bi bi-trash3-fill"></i></a>';
-                tableBody.append('<tr><td>' + printerId + '</td><td>' + printerModel + '</td><td>' + printerSerialNumber + '</td><td>' + printerCti + '</td><td>' + printerActions + '</td></tr>');
+            var urlDelete = '/api/printers/' + printerId;
+            var printerActions = `<a href="${urlEdit}" class="btn btn-primary btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
+            `<button class="btn btn-danger btn-xs" onclick="btnDeleteClicked(${printerId}, '${urlDelete}')"><i class="bi bi-trash3-fill"></i></button>`;
+            tableBody.append(`<tr><td>${printerId}</td><td>${printerModel}</td><td>${printerSerialNumber}</td><td>${printerCti}</td><td>${printerActions}</td></tr>`);
         }
     }
     displayPagination(data);

@@ -34,11 +34,15 @@
                     {{ $header }}
                 </div>
                 @if (isset($addButton))
+                @php
+                    $createRoute = Route::current()->getName();
+                    $createRoute = explode('.', $createRoute)[0] . '.create';
+                @endphp
                 <div class="w-25 pt-6 px-4 sm:px-6 lg:px-8 float-end">
-                    <button type="button" class="btn btn-success">
+                    <a type="button" class="btn btn-success" href="{{ route($createRoute); }}" role="button">
                         <i class="bi bi-plus"></i>
                         {{ $addButton }}
-                    </button>
+                    </a>
                 </div>
                 @endif
             </header>

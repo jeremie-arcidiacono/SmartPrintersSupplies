@@ -22,9 +22,19 @@ Route::get('/dashboard', function () {
 })->middleware(['auth'])->name('dashboard');
 
 
-Route::get('/printers', function () {
-    return view('tables.printers');
-})->middleware(['auth'])->name('printers.index');
+Route::prefix('printers')->group(function () {
+    Route::get('/', function () {
+        return view('tables.printers');
+    })->middleware(['auth'])->name('printers.index');
+
+    Route::get('/create', function () {
+        return view('forms.printer');
+    })->middleware(['auth'])->name('printers.create');
+
+    Route::get('/{printer}/edit', function ($printer) {
+        return view('forms.printer', ['idPrinter' => $printer]);
+    })->middleware(['auth'])->name('printers.update');
+});
 
 Route::get('/models', function () {
     return view('tables.models');

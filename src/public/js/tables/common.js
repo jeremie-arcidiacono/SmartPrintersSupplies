@@ -71,3 +71,17 @@ function perPageChanged(newPerPage) {
     currentPage = 1;
     refreshTable();
 }
+
+// Event - When the user click on a delete button
+// Display a modal to confirm the deletion
+function btnDeleteClicked(id, sendUrl) {
+    $("#deleteModal").modal("show");
+    $('#model_idItem').text(id);
+    $('#modal_btnDelete').attr('onclick', `deleteItem('${sendUrl}')`);
+}
+
+// Event - When the user click on the delete confirmation button in the modal
+function deleteItem(url) {
+    $(`#deleteModal`).modal("hide");
+    callApiDelete(url, refreshTable);
+}
