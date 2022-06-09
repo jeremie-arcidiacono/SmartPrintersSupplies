@@ -25,7 +25,7 @@
             </div>
             <div class="form-group">
                 <label for="cti">CTI</label>
-                <input type="text" class="form-control" id="cti" name="cti" placeholder="CTI" required>
+                <input type="text" class="form-control" id="cti" name="cti" placeholder="CTI" required minlength="6" maxlength="6">
             </div>
             <button class="btn btn-primary" onclick="submit()">Ajouter</button>
         </div>

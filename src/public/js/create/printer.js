@@ -31,7 +31,10 @@ function validateInput(idModel, serialNumber, cti) {
         lstError.push('Le numéro de série est obligatoire.');
     }
     if (cti == '') {
-        lstError.push('Le CTI est obligatoire.');
+        lstError.push('Le numéro CTI est obligatoire.');
+    }
+    if (cti.lenght > 6 || cti.lenght < 6) {
+        lstError.push('Le numéro CTI doit contenir 6 chiffres.');
     }
     else if (isNaN(cti)) {
         lstError.push('Le CTI doit être un nombre.');
