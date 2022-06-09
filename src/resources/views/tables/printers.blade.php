@@ -32,6 +32,7 @@
                     <option value="serialNumber" selected="selected" >Numéro de série</option>
                     <option value="cti">CTI</option>
                     <option value="room">Salle</option>
+                    <option value="model">Modèle</option>
                 </select>
             </div>
             <input type="text" class="form-control mt-2" placeholder="Rechercher..." id="search" style="max-width: 370px;" oninput="searchChanged()">

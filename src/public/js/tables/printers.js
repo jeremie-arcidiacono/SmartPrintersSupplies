@@ -41,8 +41,13 @@ function refreshTable(){
     url += '&perPage=' + perPage;
 
     if (search != '') {
-        url += '&search=' + search;
-        url += '&searchColumn=' + searchColumn;
+        if(searchColumn == 'model') {
+            url += '&searchModel=' + search;
+        }
+        else{
+            url += '&search=' + search;
+            url += '&searchColumn=' + searchColumn;
+        }
     }
     if (sortColumn != '') {
         url += '&sort=' + sortColumn;

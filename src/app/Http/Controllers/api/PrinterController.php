@@ -48,7 +48,14 @@ class PrinterController extends Controller
 
             $printers = Printer::where($searchColumn, 'like', '%' . $searchTerm . '%')->orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
         }
+        else if($request->query('searchModel')){
+            // Send printers where the model contains the search term
+            $searchTerm = $request->query('searchModel');
+
+            $printers = Printer::whereRelation('model', 'name', 'like', '%' . $searchTerm . '%')->orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
+        }
         else {
+            // Send all printers
             $printers = Printer::orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
         }
         
