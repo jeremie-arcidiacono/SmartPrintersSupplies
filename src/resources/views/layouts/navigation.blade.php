@@ -19,8 +19,8 @@
         </li>
         <li>
             <a href="#" class="nav-link link-dark">
-              <x-nav-link :href="route('printers.index')" :active="request()->routeIs('printers.index')" logoName="printer-fill">
-                {{ __('Imprimantes') }}
+              <x-nav-link :href="route('supplies.index')" :active="request()->routeIs('supplies.index')" logoName="box-seam">
+                {{ __('Consommables') }}
               </x-nav-link>
             </a>
         </li>

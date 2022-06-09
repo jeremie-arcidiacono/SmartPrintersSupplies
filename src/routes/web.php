@@ -50,6 +50,19 @@ Route::prefix('models')->group(function () {
     })->middleware(['auth'])->name('models.update');
 });
 
+Route::prefix('supplies')->group(function () {
+    Route::get('/', function () {
+        return view('tables.supplies');
+    })->middleware(['auth'])->name('supplies.index');
+
+    Route::get('/create', function () {
+        return view('forms.supply');
+    })->middleware(['auth'])->name('supplies.create');
+
+    Route::get('/{supply}/edit', function ($supply) {
+        return view('forms.supply', ['idSupply' => $supply]);
+    })->middleware(['auth'])->name('supplies.update');
+});
 
 
 

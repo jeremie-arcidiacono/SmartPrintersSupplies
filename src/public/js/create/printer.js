@@ -34,11 +34,11 @@ function validateInput(idModel, serialNumber, cti) {
     if (cti == '') {
         lstError.push('Le numéro CTI est obligatoire.');
     }
-    if (cti.lenght > 6 || cti.lenght < 6) {
-        lstError.push('Le numéro CTI doit contenir 6 chiffres.');
-    }
     else if (isNaN(cti)) {
         lstError.push('Le CTI doit être un nombre.');
+    }
+    else if (cti.lenght > 6 || cti.lenght < 6) {
+        lstError.push('Le numéro CTI doit contenir 6 chiffres.');
     }
 
     return lstError;
