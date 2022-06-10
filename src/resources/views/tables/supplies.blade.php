@@ -74,13 +74,13 @@
             <ul class="pagination" id="paginationContainers"></ul>
         </nav>
     </div>
-    <script src="{{ asset('js/callapi.js') }}"></script>
+    <script src="{{ asset('js/common.js') }}"></script>
     <script src="{{ asset('js/tables/common.js') }}"></script>
     <script src="{{ asset('js/tables/supplies.js') }}"></script>
     <script>
-        var baseURL = "{{ route('api.supplies.index') }}"
+        var baseUrl = "{{ route('api.supplies.index') }}"
         $(document).ready(function() {
-            callApiGet(baseURL, displaySuppliesTable);
+            callApiGet(baseUrl, displaySuppliesTable);
         });
     </script>
 </x-app-layout>

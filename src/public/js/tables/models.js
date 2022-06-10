@@ -28,7 +28,7 @@ function displayModelsTable(data) {
 }
 
 function refreshTable(){
-    var url = baseURL;
+    var url = baseUrl;
 
     url += '?page=' + currentPage;
     url += '&perPage=' + perPage;

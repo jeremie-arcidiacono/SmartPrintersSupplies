@@ -31,11 +31,11 @@
                 <label for="cti">CTI</label>
                 <input type="text" class="form-control" id="cti" name="cti" placeholder="CTI" required minlength="6" maxlength="6">
             </div>
-            <button class="btn btn-primary" onclick="submit()">Ajouter</button>
+            <button class="btn btn-primary" onclick="submit()">Enregistrer</button>
         </div>
     </div>
     
-    <script src="{{ asset('js/callapi.js') }}"></script>
+    <script src="{{ asset('js/common.js') }}"></script>
     <script src="{{ asset('js/create/printer.js') }}"></script>
     <script>
         var modelUrl = '{{ route('api.models.index') }}';

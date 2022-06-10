@@ -4,7 +4,7 @@
             @if (isset($idSupply))
                 {{ __("Modifier un consommable") }}
             @else
-                {{ __("Ajouter un consomable") }}
+                {{ __("Ajouter un consommable") }}
             @endif
         </h2>
     </x-slot>
@@ -21,11 +21,11 @@
                 <label for="quantity">Quantité</label>
                 <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Quantité" required>
             </div>
-            <button class="btn btn-primary" onclick="submit()">Ajouter</button>
+            <button class="btn btn-primary" onclick="submit()">Enregistrer</button>
         </div>
     </div>
     
-    <script src="{{ asset('js/callapi.js') }}"></script>
+    <script src="{{ asset('js/common.js') }}"></script>
     <script src="{{ asset('js/create/supply.js') }}"></script>
     <script>
         @if (isset($idSupply))

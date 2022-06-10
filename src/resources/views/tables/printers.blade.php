@@ -73,13 +73,13 @@
             <ul class="pagination" id="paginationContainers"></ul>
         </nav>
     </div>
-    <script src="{{ asset('js/callapi.js') }}"></script>
+    <script src="{{ asset('js/common.js') }}"></script>
     <script src="{{ asset('js/tables/common.js') }}"></script>
     <script src="{{ asset('js/tables/printers.js') }}"></script>
     <script>
-        var baseURL = "{{ route('api.printers.index') }}"
+        var baseUrl = "{{ route('api.printers.index') }}"
         $(document).ready(function() {
-            callApiGet(baseURL, displayPrintersTable);
+            callApiGet(baseUrl, displayPrintersTable);
         });
     </script>
 </x-app-layout>

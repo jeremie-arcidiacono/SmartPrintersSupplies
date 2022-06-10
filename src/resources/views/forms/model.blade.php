@@ -17,11 +17,11 @@
                 <label for="name">Nom</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Nom du modèle" maxlength="60">
             </div>
-            <button class="btn btn-primary" onclick="submit()">Ajouter</button>
+            <button class="btn btn-primary" onclick="submit()">Enregistrer</button>
         </div>
     </div>
     
-    <script src="{{ asset('js/callapi.js') }}"></script>
+    <script src="{{ asset('js/common.js') }}"></script>
     <script src="{{ asset('js/create/model.js') }}"></script>
     <script>
         @if (isset($idPrinterModel))

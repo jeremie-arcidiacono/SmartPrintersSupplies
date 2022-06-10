@@ -1,4 +1,6 @@
-// Make a GET request to the API
+/////// HTTP REQUEST METHOD ///////
+
+// Send a GET request to the API
 function callApiGet(url, callback) {
     $.ajax({
         url: url,
@@ -13,6 +15,7 @@ function callApiGet(url, callback) {
     });
 }
 
+// Send a POST request to the API
 function callApiPost(url, data, callback, errorCallback) {
     $.ajax({
         url: url,
@@ -34,6 +37,7 @@ function callApiPost(url, data, callback, errorCallback) {
     });
 }
 
+// Send a PUT request to the API
 function callApiPut(url, data, callback, errorCallback) {
     $.ajax({
         url: url,
@@ -55,6 +59,7 @@ function callApiPut(url, data, callback, errorCallback) {
     });
 }
 
+// Send a DELETE request to the API
 function callApiDelete(url, callback, errorCallback) {
     $.ajax({
         url: url,
@@ -73,3 +78,4 @@ function callApiDelete(url, callback, errorCallback) {
         }
     });
 }
+
