@@ -27,6 +27,10 @@ Route::prefix('printers')->group(function () {
         return view('tables.printers');
     })->middleware(['auth'])->name('printers.index');
 
+    Route::get('/{printer}', function ($printer) {
+        return view('printer', ['idPrinter' => $printer]);
+    })->middleware(['auth'])->name('printers.show');
+
     Route::get('/create', function () {
         return view('forms.printer');
     })->middleware(['auth'])->name('printers.create');

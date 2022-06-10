@@ -24,9 +24,11 @@ function displayPrintersTable(data) {
                 printerRoom = '-';
             }
 
+            var urlShow = '/printers/' + printerId;
             var urlEdit = '/printers/' + printerId + '/edit';
             var urlDelete = '/api/printers/' + printerId;
-            var printerActions = `<a href="${urlEdit}" class="btn btn-primary btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
+            var printerActions = `<a href="${urlShow}" class="btn btn-primary btn-xs"><i class="bi bi-eye-fill"></i></a>` +
+            `<a href="${urlEdit}" class="btn btn-success btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
             `<button class="btn btn-danger btn-xs" onclick="btnDeleteClicked(${printerId}, '${urlDelete}')"><i class="bi bi-trash3-fill"></i></button>`;
             tableBody.append(`<tr><td>${printerId}</td><td>${printerModel}</td><td>${printerRoom}</td><td>${printerSerialNumber}</td><td>${printerCti}</td><td>${printerActions}</td></tr>`);
         }

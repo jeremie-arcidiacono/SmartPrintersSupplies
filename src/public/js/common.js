@@ -79,3 +79,31 @@ function callApiDelete(url, callback, errorCallback) {
     });
 }
 
+
+/////// Delete button ///////
+
+// Event - When the user click on a delete button
+// Display a modal to confirm the deletion
+function btnDeleteClicked(id, sendUrl, redirectUrl) {
+    $("#deleteModal").modal("show");
+    $('#model_idItem').text(id);
+    $('#modal_btnDelete').attr('onclick', `deleteItem('${sendUrl}', '${redirectUrl}')`);
+}
+
+// Event - When the user click on the delete confirmation button in the modal
+function deleteItem(url, redirectUrl) {
+    $(`#deleteModal`).modal("hide");
+    if(redirectUrl == null || redirectUrl == "undefined" || redirectUrl == "") {
+        // By default, we refresh the table after the deletion
+        callApiDelete(url, refreshTable, function(data) {
+            alert(data.errors);
+        }); 
+    }
+    else{
+        callApiDelete(url, function(data) {
+            window.location.href = redirectUrl;
+        }, function(data) {
+            alert(data.errors);
+        });
+    }
+}
