@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\PrinterModel;
+use App\Models\Supply;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -172,24 +173,13 @@ class PrinterModelController extends Controller
 
     /**
      * Removes a supply from the printer model.
-     * @param  Request $request
      * @param  PrinterModel $printerModel
+     * @param  Supply $supply
      * @return JsonResponse
      */
-    public function destroyCompatibility(Request $request, PrinterModel $printerModel): JsonResponse
+    public function destroyCompatibility(PrinterModel $printerModel, Supply $supply): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'idSupply' => ['required', 'numeric', 'exists:supplies,idSupply'],
-        ]);
-
-        if ($validator->fails()) {
-            return new JsonResponse(['errors' => $validator->errors()->messages()], 422);
-        }
-        else {
-            $validated = $validator->validated();
-
-            $printerModel->supplies()->detach($validated['idSupply']);
-            return new JsonResponse([], 200);
-        }
+        $printerModel->supplies()->detach($supply->idSupply);
+        return new JsonResponse([], 200);
     }
 }
