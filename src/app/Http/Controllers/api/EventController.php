@@ -23,9 +23,14 @@ class EventController extends Controller
      *   - perPage: number of event per page
      *   - sortOrder: sort column of events
      *     - dir: sort direction (asc or desc)
-     *   - search: search string in the 'comment' column
-     *   - author: user id of the author
      *   - type: (array) actions of the event
+     *  
+     * Client can also search for values in multiple columns:
+     *  - search: Associated array of columns and values to search
+     *  Accepted keys:
+     *   - author: user name of the author of the event
+     *   - printerCti: cti of the target printer
+     *   - supply: code of the target supply
      * 
      * @param  Request $request
      * @return JsonResponse
@@ -42,17 +47,33 @@ class EventController extends Controller
         $sortColumn = $request->query('sort') ?: config('modelQuery.event_sortColumn');
         $sortDir = $request->query('dir') ?: config('modelQuery.event_sortOrder');
 
-        $idAuthor = $request->query('author') ?: null;
         $type = $request->query('type') ?: [];
 
-        if($request->query('search')){
-            // Send events where a column contains the search term
-            $searchTerm = $request->query('search');
+        if ($request->query('search')) {
+            $arrSearch = $request->query('search');
+            if (!array_key_exists('author', $arrSearch)) {
+                $arrSearch['author'] = '%'; // Search in all authors because the user did not specify one
+            }
+            if (!array_key_exists('printerCti', $arrSearch)) {
+                $arrSearch['printerCti'] = '%';
+            }
+            if (!array_key_exists('supply', $arrSearch)) {
+                $arrSearch['supply'] = '%';
+            }
+        }
 
-            $events = Event::where('comment', 'like', '%' . $searchTerm . '%')->author($idAuthor)->type($type)->orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
+        if($request->query('search')){
+            // Send events where all searchable columns match the search values
+
+            $events = Event::whereRelation('author', 'username', 'LIKE', '%' . $arrSearch['author'] . '%')
+                            ->whereRelation('targetPrinter', 'cti', 'LIKE', '%' . $arrSearch['printerCti'] . '%')
+                            ->whereRelation('targetSupply', 'code', 'LIKE', '%' . $arrSearch['supply'] . '%')
+                            ->type($type)
+                            ->orderBy($sortColumn, $sortDir)
+                            ->paginate($nbPerPage);
         }
         else {
-            $events = Event::orderBy($sortColumn, $sortDir)->author($idAuthor)->type($type)->paginate($nbPerPage);
+            $events = Event::orderBy($sortColumn, $sortDir)->type($type)->paginate($nbPerPage);
         }
         
         return new JsonResponse($events, 200);

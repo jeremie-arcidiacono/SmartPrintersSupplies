@@ -47,23 +47,6 @@ class Event extends Model
     }
 
     /**
-     * Scope a query to only include the events made by a user.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  int  $authorId
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeAuthor($query, int $authorId = null): Builder
-    {
-        if ($authorId == null) {
-            return $query;
-        }
-        else{
-            return $query->where('idUser_author', '=', $authorId);
-        }
-    }
-
-    /**
      * Scope a query to only include the events that match one or more types.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
