@@ -72,6 +72,13 @@ Route::prefix('supplies')->group(function () {
     })->middleware(['auth'])->name('supplies.update');
 });
 
+Route::get('/events/consumption', function () {
+    return view('tables.events.consumption');
+})->middleware(['auth'])->name('events.consumption');
+
+Route::get('/events/object', function () {
+    return view('events.object');
+})->middleware(['auth'])->name('events.object');
 
 
 require __DIR__.'/auth.php';
