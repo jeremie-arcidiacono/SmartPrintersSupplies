@@ -68,7 +68,7 @@ function displaySuppliesTable(data) {
 
             var buttonHtml = `<button class="btn btn-primary btn-xs" onclick="btnConsumeClicked(${supplyId})"><i class="bi bi-box-arrow-in-down"></i></button>`;
 
-            tableBody.append(`<tr><td>${supplyId}</td><td>${code}</td><td>${buttonHtml}</td></tr>`);
+            tableBody.append(`<tr><td>${supplyId}</td><td><a href="/supplies/${supplyId}">${code}</a></td><td>${buttonHtml}</td></tr>`);
         }
     }
 }
@@ -82,8 +82,4 @@ function btnConsumeClicked(supplyId) {
     }
 
     callApiPut(urlConsume, data, refreshTables);
-}
-
-function afterDeletion(){
-    window.location.href = '/printers';
 }

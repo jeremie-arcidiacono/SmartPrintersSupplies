@@ -27,7 +27,7 @@
         <!-- Filters -->
         <div class="w-50 p-3 float-end card card-block card-stretch card-height">
             <div>
-                <span>Rechercher dans la colonne : Code</span>
+                <span>Rechercher dans la colonne : Référence</span>
             </div>
             <input type="text" class="form-control mt-2" placeholder="Rechercher..." id="search" style="max-width: 370px;" oninput="searchChanged()">
             <hr>

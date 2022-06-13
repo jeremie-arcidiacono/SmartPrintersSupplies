@@ -20,9 +20,11 @@ function displaySuppliesTable(data) {
             var supplyCode = supply.code;
             var supplyQuantity = supply.quantity;
 
+            var urlShow = '/supplies/' + supplyId;
             var urlEdit = '/supplies/' + supplyId + '/edit';
             var urlDelete = '/api/supplies/' + supplyId;
-            var modelActions = `<a href="${urlEdit}" class="btn btn-primary btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
+            var modelActions = `<a href="${urlShow}" class="btn btn-primary btn-xs"><i class="bi bi-eye-fill"></i></a>` +
+                `<a href="${urlEdit}" class="btn btn-success btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
                 `<button class="btn btn-danger btn-xs" onclick="btnDeleteClicked(${supplyId}, '${urlDelete}')"><i class="bi bi-trash3-fill"></i></button>`;
             tableBody.append(`<tr><td>${supplyId}</td><td>${supplyCode}</td><td>${supplyQuantity}</td><td>${modelActions}</td></tr>`);        
         }

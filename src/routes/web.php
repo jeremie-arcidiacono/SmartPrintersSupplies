@@ -59,6 +59,10 @@ Route::prefix('supplies')->group(function () {
         return view('tables.supplies');
     })->middleware(['auth'])->name('supplies.index');
 
+    Route::get('/{supply}', function ($supply) {
+        return view('supply', ['idSupply' => $supply]);
+    })->middleware(['auth'])->name('supply.show');
+
     Route::get('/create', function () {
         return view('forms.supply');
     })->middleware(['auth'])->name('supplies.create');
