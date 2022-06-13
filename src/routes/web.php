@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -79,6 +80,18 @@ Route::get('/events/consumption', function () {
 Route::get('/events/object', function () {
     return view('events.object');
 })->middleware(['auth'])->name('events.object');
+
+
+Route::get('/users', function () {
+    return view('tables.users');
+})->middleware(['auth'])->name('users.index');
+
+Route::get('/users', [UserController::class, 'index'])->middleware(['auth'])->name('users.index');
+Route::patch('/users/{user}/toggleStatus', [UserController::class, 'toggleStatus'])->middleware(['auth'])->name('users.toggleStatus');
+
+Route::get('/users/create', function () {
+    return redirect()->route('register');
+})->middleware(['auth'])->name('users.create');
 
 
 require __DIR__.'/auth.php';

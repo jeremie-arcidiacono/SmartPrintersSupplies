@@ -25,7 +25,15 @@
             <i class="bi bi-card-list me-1" width="16" height="16"></i>
             Historique
           </button>
-          <div class="collapse" id="orders-collapse" style="">
+          @php
+            // Choose if the collapse is expanded or not by default
+            if (request()->routeIs('events.*')) {
+              $show = "show";
+            }  else {
+              $show = "";
+            } 
+          @endphp
+          <div class="collapse {{$show}}" id="orders-collapse" style="">
             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
               <li class="ms-3">
                 <x-nav-link :href="route('events.consumption')" :active="request()->routeIs('events.consumption')">
@@ -40,6 +48,11 @@
             </ul>
           </div>
         </li>
+        <li class="mb-2 py-1">
+          <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" logoName="people-fill">
+            {{ __('Utilisateurs') }}
+          </x-nav-link>
+      </li>
     </ul>
     <hr />
     <div>

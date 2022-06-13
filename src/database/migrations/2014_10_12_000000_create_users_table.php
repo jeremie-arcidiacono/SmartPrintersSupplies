@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->rememberToken();
+            $$table->boolean('status')->comment("0 = inactive, 1 = active. Inactive users cannot log in.");
             $table->timestamp("created_at")->useCurrent();
         });
     }
