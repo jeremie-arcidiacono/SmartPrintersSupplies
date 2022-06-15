@@ -46,10 +46,9 @@
                                 name="password_confirmation" required />
             </div>
 
-            <div class="flex items-center justify-end mt-4">
-                <x-button class="ml-4">
-                    {{ __('Register') }}
-                </x-button>
+            <div class="flex items-center justify-content-between mt-4">
+                <a class="btn btn-secondary ml-4 px-3" href="{{ route('users.index') }}" role="button">Retour</a>
+                <button class="btn btn-success ml-4 px-3" role="button" type="submit">Créer</a>
             </div>
         </form>
     </x-auth-card>
