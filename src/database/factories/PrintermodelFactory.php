@@ -8,7 +8,7 @@ use App\Models\PrinterModel;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
-class PrintermodelFactory extends Factory
+class PrinterModelFactory extends Factory
 {
     protected $model = PrinterModel::class;
     protected $table = 'printerModels';
