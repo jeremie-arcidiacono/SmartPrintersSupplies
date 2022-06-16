@@ -3,6 +3,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
+        <i class="bi bi-exclamation-triangle fs-3 me-2"></i>
         <h5 class="modal-title">Suppression</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
