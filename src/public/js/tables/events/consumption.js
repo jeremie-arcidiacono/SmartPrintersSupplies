@@ -8,7 +8,7 @@ function displayEventsTable(data) {
     tableBody.empty();
 
     if (events.length == 0) {
-        tableBody.append(`<tr><td class="text-center" colspan="5">Aucun élément trouvé</td></tr>`);
+        tableBody.append(`<tr><td class="text-center" colspan="6">Aucun élément trouvé</td></tr>`);
     }
     else{
         for (var i = 0; i < events.length; i++) {
@@ -29,13 +29,13 @@ function displayEventsTable(data) {
             if(event.target_printer != null){
                 var eventPrinterId = event.target_printer.idPrinter;
                 var eventPrinterCti = event.target_printer.cti;
-                htmlString += `<td><a href="/printers/${eventPrinterId}">${eventPrinterCti}</a></td>`;
+                htmlString += `<td><a href="/printers/${eventPrinterId}/detail">${eventPrinterCti}</a></td>`;
             }
             else{
                 htmlString += `<td class="text-secondary">-</td>`;
             }
 
-            htmlString += `<td><a href="/supplies/${eventSupplyId}">${eventSupplyName}</a></td>`;
+            htmlString += `<td><a href="/supplies/${eventSupplyId}/detail">${eventSupplyName}</a></td>`;
 
             if (Math.sign(eventQuantity) == 1) {
                 htmlString += `<td class="text-success">+${eventQuantity}</td>`;

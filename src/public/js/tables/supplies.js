@@ -20,7 +20,7 @@ function displaySuppliesTable(data) {
             var supplyCode = supply.code;
             var supplyQuantity = supply.quantity;
 
-            var urlShow = '/supplies/' + supplyId;
+            var urlShow = '/supplies/' + supplyId + '/detail';
             var urlEdit = '/supplies/' + supplyId + '/edit';
             var urlDelete = '/api/supplies/' + supplyId;
             var modelActions = `<a href="${urlShow}" class="btn btn-primary btn-xs"><i class="bi bi-eye-fill"></i></a>` +

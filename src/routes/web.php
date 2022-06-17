@@ -28,7 +28,7 @@ Route::prefix('printers')->group(function () {
         return view('tables.printers');
     })->middleware(['auth'])->name('printers.index');
 
-    Route::get('/{printer}', function ($printer) {
+    Route::get('/{printer}/detail', function ($printer) {
         return view('printer', ['idPrinter' => $printer]);
     })->middleware(['auth'])->name('printers.show');
 
@@ -60,7 +60,7 @@ Route::prefix('supplies')->group(function () {
         return view('tables.supplies');
     })->middleware(['auth'])->name('supplies.index');
 
-    Route::get('/{supply}', function ($supply) {
+    Route::get('/{supply}/detail', function ($supply) {
         return view('supply', ['idSupply' => $supply]);
     })->middleware(['auth'])->name('supply.show');
 

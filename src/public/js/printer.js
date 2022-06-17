@@ -68,7 +68,7 @@ function displaySuppliesTable(data) {
 
             var buttonHtml = `<button class="btn btn-primary btn-xs" onclick="btnConsumeClicked(${supplyId})"><i class="bi bi-box-arrow-in-down"></i></button>`;
 
-            tableBody.append(`<tr><td>${supplyId}</td><td><a href="/supplies/${supplyId}">${code}</a></td><td>${buttonHtml}</td></tr>`);
+            tableBody.append(`<tr><td>${supplyId}</td><td><a href="/supplies/${supplyId}/detail">${code}</a></td><td>${buttonHtml}</td></tr>`);
         }
     }
 }

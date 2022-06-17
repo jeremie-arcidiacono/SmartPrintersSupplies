@@ -81,7 +81,7 @@ function displayIncompatibleModelsTable() {
 }
 
 function btnAddCompatibilityClicked(idPrinterModel) {
-    var url = `/api/models/${idPrinterModel}/compatibilities/`;
+    var url = `/api/models/${idPrinterModel}/compatibilities`;
     var data = {
         idSupply: supply.idSupply
     };

@@ -24,7 +24,7 @@ function displayPrintersTable(data) {
                 printerRoom = '-';
             }
 
-            var urlShow = '/printers/' + printerId;
+            var urlShow = '/printers/' + printerId + '/detail';
             var urlEdit = '/printers/' + printerId + '/edit';
             var urlDelete = '/api/printers/' + printerId;
             var printerActions = `<a href="${urlShow}" class="btn btn-primary btn-xs"><i class="bi bi-eye-fill"></i></a>` +
