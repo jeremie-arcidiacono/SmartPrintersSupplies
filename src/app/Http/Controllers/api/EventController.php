@@ -55,22 +55,31 @@ class EventController extends Controller
                 $arrSearch['author'] = '%'; // Search in all authors because the user did not specify one
             }
             if (!array_key_exists('printerCti', $arrSearch)) {
-                $arrSearch['printerCti'] = '%';
+                $arrSearch['printerCti'] = ''; // Don't search in printer cti because the user did not specify one
             }
             if (!array_key_exists('supply', $arrSearch)) {
-                $arrSearch['supply'] = '%';
+                $arrSearch['supply'] = '%'; // Search in all supplies because the user did not specify one
             }
         }
 
         if($request->query('search')){
-            // Send events where all searchable columns match the search values
-
-            $events = Event::whereRelation('author', 'username', 'LIKE', '%' . $arrSearch['author'] . '%')
+            if ($arrSearch['printerCti'] != '') {
+                // Send events where all searchable columns match the search values
+                $events = Event::whereRelation('author', 'username', 'LIKE', '%' . $arrSearch['author'] . '%')
                             ->whereRelation('targetPrinter', 'cti', 'LIKE', '%' . $arrSearch['printerCti'] . '%')
                             ->whereRelation('targetSupply', 'code', 'LIKE', '%' . $arrSearch['supply'] . '%')
                             ->type($type)
                             ->orderBy($sortColumn, $sortDir)
                             ->paginate($nbPerPage);
+            }
+            else {
+                // Send events where searchable columns match the search values (execpt printer cti, because some event don't have a printer related to them)
+                $events = Event::whereRelation('author', 'username', 'LIKE', '%' . $arrSearch['author'] . '%')
+                            ->whereRelation('targetSupply', 'code', 'LIKE', '%' . $arrSearch['supply'] . '%')
+                            ->type($type)
+                            ->orderBy($sortColumn, $sortDir)
+                            ->paginate($nbPerPage);
+            }
         }
         else {
             $events = Event::orderBy($sortColumn, $sortDir)->type($type)->paginate($nbPerPage);

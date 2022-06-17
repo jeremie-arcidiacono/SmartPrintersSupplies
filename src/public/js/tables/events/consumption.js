@@ -68,7 +68,9 @@ function refreshTable(){
     if (search != null) {
         for (const column in search) {
             const searchValue = search[column];
-            url += '&search[' + column + ']=' + searchValue;
+            if (searchValue != '') {
+                url += '&search[' + column + ']=' + searchValue;
+            }
         }
     }
 
