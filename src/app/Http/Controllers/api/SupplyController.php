@@ -82,6 +82,7 @@ class SupplyController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
+            'brand' => ['required', 'string', 'max:20'],
             'code' => ['required', 'string', 'max:20', 'unique:supplies'],
             'quantity' => ['required', 'integer', 'min:0']
         ]);
@@ -94,6 +95,7 @@ class SupplyController extends Controller
 
             $supply = new Supply;
 
+            $supply->brand = $validated['brand'];
             $supply->code = $validated['code'];
             $supply->quantity = $validated['quantity'];
 
@@ -113,6 +115,7 @@ class SupplyController extends Controller
     public function update(Request $request, Supply $supply)
     {
         $validator = Validator::make($request->all(), [
+            'brand' => ['string', 'max:20'],
             'code' => ['string', 'max:20', Rule::unique('supplies')->ignore($supply)],
             'quantity' => ['integer', 'min:0'],
             'addQuantity' => ['integer', 'min:0'],
@@ -128,6 +131,9 @@ class SupplyController extends Controller
 
             if ($request->has('code')) {
                 $supply->code = $validated['code'];
+            }
+            if ($request->has('brand')) {
+                $supply->brand = $validated['brand'];
             }
 
             if ($request->has('quantity')) {

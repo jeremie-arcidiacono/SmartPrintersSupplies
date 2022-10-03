@@ -73,6 +73,7 @@ class PrinterModelController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:60', 'unique:printerModels'],
+            'brand' => ['required', 'string', 'max:20'],
         ]);
 
         if ($validator->fails()) {
@@ -84,6 +85,7 @@ class PrinterModelController extends Controller
             $printerModel = new PrinterModel;
 
             $printerModel->name = $validated['name'];
+            $printerModel->brand = $validated['brand'];
 
             $printerModel->save();
             
@@ -102,6 +104,7 @@ class PrinterModelController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:60', Rule::unique('printerModels')->ignore($printerModel)],
+            'brand' => ['required', 'string', 'max:20'],
         ]);
 
         if ($validator->fails()) {
@@ -111,6 +114,7 @@ class PrinterModelController extends Controller
             $validated = $validator->validated();
 
             $printerModel->name = $validated['name'];
+            $printerModel->brand = $validated['brand'];
             $printerModel->save();
             return new JsonResponse([], 200);
         }

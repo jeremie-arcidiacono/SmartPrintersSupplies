@@ -48,6 +48,7 @@
                         <i class="bi bi-arrow-up ps-1" id="sort_up_idPrinter" style="color: rgb(183, 183, 207);"></i>
                         <i class="bi bi-arrow-down" id="sort_down_idPrinter" style="color: rgb(183, 183, 207);"></i>
                     </th>
+                    <th scope="col">Marque</th>
                     <th scope="col">Modèle</th>
                     <th scope="col" onclick="sortChanged('room')">Salle
                         <i class="bi bi-arrow-up ps-1" id="sort_up_room" style="color: rgb(183, 183, 207);"></i>

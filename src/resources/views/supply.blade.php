@@ -14,6 +14,10 @@
                 <span id="idSupply"></span>
             </div>
             <div>
+                <span>Marque :</span>
+                <span id="brand"></span>
+            </div>
+            <div>
                 <span>Référence :</span>
                 <span id="code"></span>
             </div>

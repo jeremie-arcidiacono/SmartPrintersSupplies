@@ -8,7 +8,7 @@ function loadModels() {
         modelList.append('<option value="" selected disabled hidden>Choisir un modèle</option>');
         models = data.data;
         for (var i = 0; i < models.length; i++) {
-            modelList.append(`<option value="${models[i].idPrinterModel}">${models[i].name}</option>`);
+            modelList.append(`<option value="${models[i].idPrinterModel}">${models[i].brand} - ${models[i].name}</option>`);
         }
     });
 }

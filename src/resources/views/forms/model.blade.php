@@ -14,6 +14,10 @@
         
         <div>
             <div class="form-group">
+                <label for="brand">Marque</label>
+                <input type="text" class="form-control" id="brand" name="brand" placeholder="Marque" maxlength="60">
+            </div>
+            <div class="form-group">
                 <label for="name">Nom</label>
                 <input type="text" class="form-control" id="name" name="name" placeholder="Nom du modèle" maxlength="60">
             </div>

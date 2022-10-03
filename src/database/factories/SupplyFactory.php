@@ -20,6 +20,7 @@ class SupplyFactory extends Factory
     public function definition()
     {
         return [
+            'brand' => $this->faker->randomElement(['HP', 'Canon', 'Epson']),
             'code' => $this->faker->bothify('???-####-?#'),
             'quantity' => $this->faker->numberBetween(0, 500)
         ];

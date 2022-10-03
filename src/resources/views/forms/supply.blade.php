@@ -14,6 +14,10 @@
         
         <div>
             <div class="form-group">
+                <label for="brand">Marque</label>
+                <input type="text" class="form-control" id="brand" name="brand" placeholder="Marque" required>
+            </div>
+            <div class="form-group">
                 <label for="code">Référence</label>
                 <input type="text" class="form-control" id="code" name="code" placeholder="Référence" required>
             </div>

@@ -6,6 +6,7 @@ function displaySupplyInfos(data) {
     supply = data.data;
     
     $('#idSupply').text(supply.idSupply);
+    $('#brand').text(supply.brand);
     $('#code').text(supply.code);
     $('#quantity').text(supply.quantity);
 

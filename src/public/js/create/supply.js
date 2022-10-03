@@ -5,14 +5,18 @@ var initialQuantity = null; // The initial quantity of the supply (if it is an e
 function loadSupply(supplyUrl) {
     callApiGet(supplyUrl, function(data) {
         var supply = data.data;
+        $('#brand').val(supply.brand);
         $('#code').val(supply.code);
         $('#quantity').val(supply.quantity);
         initialQuantity = supply.quantity;
     });
 }
 
-function validateInput(code, quantity) {
+function validateInput(brand, code, quantity) {
     var lstError = [];
+    if (brand == '') {
+        lstError.push('La marque est obligatoire.');
+    }
     if (code == '') {
         lstError.push('Le code est obligatoire.');
     }
@@ -27,13 +31,14 @@ function validateInput(code, quantity) {
 }
 
 function submit() {
+    var brand = $('#brand').val();
     var code = $('#code').val();
     var quantity = $('#quantity').val();
 
     alerts.empty();
     alerts.removeClass('alert-danger alert-success');
 
-    lstError = validateInput(code, quantity);
+    lstError = validateInput(brand, code, quantity);
     
     if (lstError.length > 0) {
         alerts.addClass('alert alert-danger');
@@ -50,6 +55,7 @@ function submit() {
     else {
         if (MODE == 'create') {
             var data = {
+                brand: brand,
                 code: code,
                 quantity: quantity
             }
@@ -58,12 +64,13 @@ function submit() {
         else if (MODE == 'edit') {
             if (initialQuantity != quantity) {
                 var data = {
+                    brand: brand,
                     code: code,
                     quantity: quantity
                 }
             }
             else {
-                var data = {code: code}
+                var data = {brand: brand, code: code}
             }
             callApiPut(sendUrl, data, succes, error);
         }

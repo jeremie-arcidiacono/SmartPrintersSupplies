@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('supplies', function (Blueprint $table) {
             $table->bigIncrements("idSupply");
+            $table->string('brand', 20);
             $table->string('code', 20);
             $table->unsignedInteger('quantity');
             $table->timestamp("created_at")->useCurrent();

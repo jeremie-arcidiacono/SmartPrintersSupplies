@@ -15,6 +15,7 @@ function displayPrintersTable(data) {
         for (var i = 0; i < printers.length; i++) {
             var printer = printers[i];
             var printerId = printer.idPrinter;
+            var printerBrand = printer.model.brand;
             var printerModel = printer.model.name;
             var printerRoom = printer.room;
             var printerSerialNumber = printer.serialNumber;
@@ -30,7 +31,7 @@ function displayPrintersTable(data) {
             var printerActions = `<a href="${urlShow}" class="btn btn-primary btn-xs"><i class="bi bi-eye-fill"></i></a>` +
             `<a href="${urlEdit}" class="btn btn-success btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
             `<button class="btn btn-danger btn-xs" onclick="btnDeleteClicked(${printerId}, '${urlDelete}')"><i class="bi bi-trash3-fill"></i></button>`;
-            tableBody.append(`<tr><td>${printerId}</td><td>${printerModel}</td><td>${printerRoom}</td><td>${printerSerialNumber}</td><td>${printerCti}</td><td>${printerActions}</td></tr>`);
+            tableBody.append(`<tr><td>${printerId}</td><td>${printerBrand}</td><td>${printerModel}</td><td>${printerRoom}</td><td>${printerSerialNumber}</td><td>${printerCti}</td><td>${printerActions}</td></tr>`);
         }
     }
     displayPagination(data);

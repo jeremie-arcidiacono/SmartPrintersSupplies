@@ -54,6 +54,10 @@
                         <i class="bi bi-arrow-up ps-1" id="sort_up_idSupply" style="color: rgb(183, 183, 207);"></i>
                         <i class="bi bi-arrow-down" id="sort_down_idSupply" style="color: rgb(183, 183, 207);"></i>
                     </th>
+                    <th scope="col" onclick="sortChanged('brand')">Marque
+                        <i class="bi bi-arrow-up ps-1" id="sort_up_brand" style="color: rgb(183, 183, 207);"></i>
+                        <i class="bi bi-arrow-down" id="sort_down_brand" style="color: rgb(183, 183, 207);"></i>
+                    </th>
                     <th scope="col" onclick="sortChanged('code')">Référence
                         <i class="bi bi-arrow-up ps-1" id="sort_up_code" style="color: rgb(183, 183, 207);"></i>
                         <i class="bi bi-arrow-down" id="sort_down_code" style="color: rgb(183, 183, 207);"></i>

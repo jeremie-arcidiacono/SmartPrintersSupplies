@@ -5,14 +5,18 @@ function loadModel(modelUrl) {
     callApiGet(modelUrl, function(data) {
         var model = data.data;
         $('#name').val(model.name);
+        $('#brand').val(model.brand);
     });
 }
 
-function validateInput(name) {
+function validateInput(name, brand) {
     var lstError = [];
     
     if (name == '') {
         lstError.push('Le nom du modèle est obligatoire.');
+    }
+    if (brand == '') {
+        lstError.push('La marque est obligatoire.');
     }
 
     return lstError;
@@ -20,11 +24,12 @@ function validateInput(name) {
 
 function submit() {
     var name = $('#name').val();
+    var brand = $('#brand').val();
 
     alerts.empty();
     alerts.removeClass('alert-danger alert-success');
 
-    lstError = validateInput(name);
+    lstError = validateInput(name, brand);
     
     if (lstError.length > 0) {
         alerts.addClass('alert alert-danger');
@@ -40,7 +45,8 @@ function submit() {
     }
     else {
         var data = {
-            name: name
+            name: name,
+            brand: brand
         }
 
         if (MODE == 'create') {

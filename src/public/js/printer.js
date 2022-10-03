@@ -5,6 +5,7 @@ function displayPrinterInfos(data) {
     printer = data.data;
     
     $('#idPrinter').text(printer.idPrinter);
+    $('#brand').text(printer.model.brand);
     $('#model').text(printer.model.name);
     $('#room').text(printer.room);
     $('#serialNumber').text(printer.serialNumber);

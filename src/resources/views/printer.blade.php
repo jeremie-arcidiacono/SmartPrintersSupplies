@@ -14,6 +14,10 @@
                 <span id="idPrinter"></span>
             </div>
             <div>
+                <span>Marque :</span>
+                <span id="brand"></span>
+            </div>
+            <div>
                 <span>Modèle :</span>
                 <span id="model"></span>
             </div>

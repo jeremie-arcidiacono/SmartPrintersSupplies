@@ -21,6 +21,7 @@ class PrinterModelFactory extends Factory
     public function definition()
     {
         return [
+            'brand' => $this->faker->randomElement(['HP', 'Canon', 'Epson']),
             'name' => $this->faker->bothify('???-####-?#'),
         ];
     }
