@@ -140,13 +140,21 @@ class SupplyController extends Controller
                 EventController::store(Auth::id(), 'changeAmount', ['idSupply' => $supply->idSupply], $validated['quantity'] - $supply->quantity);
                 $supply->quantity = $validated['quantity'];
             } 
-            else if ($request->has('addQuantity')) {
-                $supply->quantity += $validated['addQuantity'];
-                EventController::store(Auth::id(), 'changeAmount', ['idSupply' => $supply->idSupply, 'idPrinter' => $validated['idPrinter']], $validated['addQuantity']);
-            } 
-            else if ($request->has('removeQuantity')) {
-                $supply->quantity -= $validated['removeQuantity'];
-                EventController::store(Auth::id(), 'changeAmount', ['idSupply' => $supply->idSupply, 'idPrinter' => $validated['idPrinter']], -$validated['removeQuantity']);
+            else {
+                $printerModel = \App\Models\Printer::find($validated['idPrinter'])->model;
+                if ($supply->models && $supply->models->contains($printerModel)) {
+                    if ($request->has('addQuantity')) {
+                        $supply->quantity += $validated['addQuantity'];
+                        EventController::store(Auth::id(), 'changeAmount', ['idSupply' => $supply->idSupply, 'idPrinter' => $validated['idPrinter']], $validated['addQuantity']);
+                    } 
+                    else if ($request->has('removeQuantity')) {
+                        $supply->quantity -= $validated['removeQuantity'];
+                        EventController::store(Auth::id(), 'changeAmount', ['idSupply' => $supply->idSupply, 'idPrinter' => $validated['idPrinter']], -$validated['removeQuantity']);
+                    }
+                }
+                else {
+                    return new JsonResponse(['errors' => ['idPrinter' => ['Printer model does not have a compability with this supply']]], 422);
+                }
             }
             
             $supply->save();
