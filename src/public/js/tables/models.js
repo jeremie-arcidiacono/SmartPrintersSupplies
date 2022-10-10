@@ -15,13 +15,14 @@ function displayModelsTable(data) {
         for (var i = 0; i < models.length; i++) {
             var model = models[i];
             var modelId = model.idPrinterModel;
+            var modelBrand = model.brand;
             var modelName = model.name;
 
             var urlEdit = '/models/' + modelId + '/edit';
             var urlDelete = '/api/models/' + modelId;
-            var modelActions = `<a href="${urlEdit}" class="btn btn-primary btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
+            var modelActions = `<a href="${urlEdit}" class="btn btn-success btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
                 `<button class="btn btn-danger btn-xs" onclick="btnDeleteClicked(${modelId}, '${urlDelete}')"><i class="bi bi-trash3-fill"></i></button>`;
-            tableBody.append(`<tr><td>${modelId}</td><td>${modelName}</td><td>${modelActions}</td></tr>`);        
+            tableBody.append(`<tr><td>${modelId}</td><td>${modelBrand}</td><td>${modelName}</td><td>${modelActions}</td></tr>`);        
         }
     }
     displayPagination(data);
