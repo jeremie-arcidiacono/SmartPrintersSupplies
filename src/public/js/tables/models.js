@@ -51,5 +51,5 @@ function searchChanged() {
     search = $('#search').val();
 
     currentPage = 1;
-    refreshTable();
+    debounceFunction(refreshTable, 300);
 }

@@ -71,5 +71,5 @@ function searchChanged() {
     }
 
     currentPage = 1;
-    refreshTable();
+    debounceFunction(refreshTable, 300);
 }
