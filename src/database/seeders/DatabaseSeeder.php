@@ -18,6 +18,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        // check if app is in development mode
+        if (app()->environment('local')) {
+            User::factory()->create([
+                'username' => 'e',
+                'email' => 'e@e.e',
+                'password' => bcrypt('123'),
+            ]);
+        }
+
         User::factory(3)->create();
 
         PrinterModel::factory(10)
