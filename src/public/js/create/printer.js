@@ -2,14 +2,17 @@ var alerts = $('#alerts');
 
 
 function loadModels() {
-    callApiGet(modelUrl, function(data) {
-        var modelList = $('#modelList');
-        modelList.empty();
-        modelList.append('<option value="" selected disabled hidden>Choisir un modèle</option>');
-        models = data.data;
-        for (var i = 0; i < models.length; i++) {
-            modelList.append(`<option value="${models[i].idPrinterModel}">${models[i].brand} - ${models[i].name}</option>`);
-        }
+    return new Promise(function(resolve, reject) {
+        callApiGet(modelUrl, function(data) {
+            var modelList = $('#modelList');
+            modelList.empty();
+            modelList.append('<option value="" selected disabled hidden>Choisir un modèle</option>');
+            models = data.data;
+            for (var i = 0; i < models.length; i++) {
+                modelList.append(`<option value="${models[i].idPrinterModel}">${models[i].brand} - ${models[i].name}</option>`);
+            }
+            resolve();
+        });
     });
 }
 

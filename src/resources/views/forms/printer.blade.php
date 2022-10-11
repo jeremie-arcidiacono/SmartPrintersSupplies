@@ -39,15 +39,16 @@
     <script src="{{ asset('js/create/printer.js') }}"></script>
     <script>
         var modelUrl = '{{ route('api.models.index') }}';
-        loadModels();
-
-        @if (isset($idPrinter))
-            const MODE = 'edit';
-            var sendUrl = "{{ route('api.printers.update', ['printer' => $idPrinter])  }}"; // URl to send data
-            loadPrinter("{{ route('api.printers.show', ['printer' => $idPrinter]) }}");
-        @else
-            const MODE = 'create';
-            var sendUrl = "{{ route('api.printers.store') }}";
-        @endif
+        
+        loadModels().then(() => {
+            @if (isset($idPrinter))
+                const MODE = 'edit';
+                var sendUrl = "{{ route('api.printers.update', ['printer' => $idPrinter])  }}"; // URl to send data
+                loadPrinter("{{ route('api.printers.show', ['printer' => $idPrinter]) }}");     // The loadPrinter() need to be called after the loadModels() function
+            @else
+                const MODE = 'create';
+                var sendUrl = "{{ route('api.printers.store') }}";
+            @endif
+        });
     </script>
 </x-app-layout>
