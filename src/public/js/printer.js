@@ -26,14 +26,19 @@ function displayPrinterInfos(data) {
 }
 
 function refreshTables() {
-    callApiGet(eventsUrl, displayEventsTable);
+    callApiGet(eventsUrl, displayEvents);
 
     suppliesUrl = suppliesGenericUrl.replace('#idPrinterModel', printer.model.idPrinterModel);
     callApiGet(suppliesUrl, displaySuppliesTable);
 }
 
-function displayEventsTable(data) {
+function displayEvents(data) {
     var events = data.data;
+    displayEventsTable(events.slice(0, nbEventsToDisplay)); // get the X first events
+    displayEventsChart(events);
+}
+
+function displayEventsTable(events) {
     var tableBody = $('#eventsTable_body');
     tableBody.empty();
 
@@ -83,4 +88,54 @@ function btnConsumeClicked(supplyId) {
     }
 
     callApiPut(urlConsume, data, refreshTables);
+}
+
+
+function displayEventsChart(pData) {
+    const ctx = document.getElementById('eventsChart').getContext('2d');
+    ctx.clearRect(0, 0, ctx.width, ctx.height); // Clear the canvas before drawing the chart
+
+    var events = []; // Array as : ['supplies01' => 3, 'supplies4' => 1, ...]
+    pData.forEach(event => {
+        // Check if the key event.target_supply.code is already in the array
+        if (event.target_supply.code in events) {
+            events[event.target_supply.code] += Math.abs(event.amount);
+        }
+        else {
+            events[event.target_supply.code] = 1;
+        }
+    });
+
+    // Transform the associative array into two arrays (labels and data)
+    const labels = Object.keys(events);
+    const data = Object.values(events);
+    const colors = randomColor({count: data.length, format: 'rgba', hue: 'blue', luminosity: 'bright', alpha: 0.7}); // This library is used to generate attractive random colors
+
+    const chartData = {
+        labels: labels,
+        datasets: [{
+            label: 'Nombre d\'items consommés',
+            backgroundColor: colors,
+            borderColor: 'rgba(200, 200, 200, 0.75)',
+            hoverBorderColor: 'rgba(200, 200, 200, 1)',
+            data: data
+        }]
+    };
+    const chartConfig = {
+        type: 'pie',
+        data: chartData,
+        options: {
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Nombre d\'items consommés'
+                }
+            }
+        },
+
+    };
+    const mainChart = new Chart(ctx, chartConfig);
 }

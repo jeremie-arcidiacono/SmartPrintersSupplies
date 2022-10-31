@@ -73,8 +73,11 @@
                 </table>
             </div>
         </div>
-
+        <div class="w-50 m-auto">
+            <canvas id="eventsChart"></canvas>
+        </div>
     </div>
+
 
     <script src="{{ asset('js/common.js') }}"></script>
     <script src="{{ asset('js/printer.js') }}"></script>
@@ -83,6 +86,7 @@
     <script>
         var baseUrl = "{{ route('api.printers.show', ['printer' => $idPrinter]) }}";
         var eventsUrl = "{{ route('api.printers.events', ['printer' => $idPrinter]) }}";
+        const nbEventsToDisplay = {{ config('modelQuery.printer_nbEvent') }};
         var suppliesGenericUrl = "{{ route('api.models.index') . '/#idPrinterModel/compatibilities' }}"; // URL but without the model id
         var suppliesUrl = ""; // URL with the model id (it will be set when the printers infos are fetched)
         $(document).ready(function () {
