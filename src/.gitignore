@@ -13,3 +13,6 @@ yarn-error.log
 /.idea
 /.vscode
 /docker/cert/*
+
+# Ignore the JS library files
+/public/js/lib/*

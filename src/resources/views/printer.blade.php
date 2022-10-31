@@ -78,6 +78,8 @@
 
     <script src="{{ asset('js/common.js') }}"></script>
     <script src="{{ asset('js/printer.js') }}"></script>
+    <script src="{{ asset('js/lib/chart.min.js') }}"></script>
+    <script src="{{ asset('js/lib/randomColor.min.js') }}"></script>
     <script>
         var baseUrl = "{{ route('api.printers.show', ['printer' => $idPrinter]) }}";
         var eventsUrl = "{{ route('api.printers.events', ['printer' => $idPrinter]) }}";

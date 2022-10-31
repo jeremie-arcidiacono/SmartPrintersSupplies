@@ -21,7 +21,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
 
         <!-- Import jQuery -->
-        <script src="{{ asset('js/jquery-3.6.0.min.js') }}"></script>
+        <script src="{{ asset('js/lib/jquery.min.js') }}"></script>
 
     </head>
     <body class="font-sans antialiased">
