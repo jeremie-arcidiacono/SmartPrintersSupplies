@@ -78,10 +78,10 @@ function submit() {
             cti: cti
         }
 
-        if (MODE == 'create') {
+        if (mode == 'create') {
             callApiPost(sendUrl, data, succes, error);   
         }
-        else if (MODE == 'edit') {
+        else if (mode == 'edit') {
             callApiPut(sendUrl, data, succes, error);
         }
     }
@@ -92,13 +92,13 @@ function succes(data) {
     alerts.addClass('alert alert-success');
     alerts.append('Le nouveau matériel a été ajouté.');
 
-    if (MODE == 'create') {
+    if (mode == 'create') {
         $('#modelList').val('');
         $('#room').val('');
         $('#serialNumber').val('');
         $('#cti').val('');
     }
-    else if (MODE == 'edit') {
+    else if (mode == 'edit') {
         window.location.href = '/printers';
     }
 }
@@ -116,4 +116,11 @@ function error(data) {
     }
     htmlString += '</ul>';
     alerts.append(htmlString);
+}
+
+function keyDown(event) {
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if (keycode == 13) {
+        submit();
+    }
 }

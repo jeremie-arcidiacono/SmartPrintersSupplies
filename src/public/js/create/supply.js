@@ -53,7 +53,7 @@ function submit() {
         return false;
     }
     else {
-        if (MODE == 'create') {
+        if (mode == 'create') {
             var data = {
                 brand: brand,
                 code: code,
@@ -61,7 +61,7 @@ function submit() {
             }
             callApiPost(sendUrl, data, succes, error);   
         }
-        else if (MODE == 'edit') {
+        else if (mode == 'edit') {
             if (initialQuantity != quantity) {
                 var data = {
                     brand: brand,
@@ -82,11 +82,11 @@ function succes(data) {
     alerts.addClass('alert alert-success');
     alerts.append('Le nouveau matériel a été ajouté.');
 
-    if (MODE == 'create') {
+    if (mode == 'create') {
         $('#code').val('');
         $('#quantity').val('');
     }
-    else if (MODE == 'edit') {
+    else if (mode == 'edit') {
         window.location.href = '/supplies';
     }
 }
@@ -104,4 +104,11 @@ function error(data) {
     }
     htmlString += '</ul>';
     alerts.append(htmlString);
+}
+
+function keyDown(event) {
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if (keycode == 13) {
+        submit();
+    }
 }

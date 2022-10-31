@@ -15,15 +15,15 @@
         <div>
             <div class="form-group">
                 <label for="brand">Marque</label>
-                <input type="text" class="form-control" id="brand" name="brand" placeholder="Marque" required>
+                <input type="text" class="form-control" id="brand" name="brand" placeholder="Marque" required onkeydown="keyDown(event)">
             </div>
             <div class="form-group">
                 <label for="code">Référence</label>
-                <input type="text" class="form-control" id="code" name="code" placeholder="Référence" required>
+                <input type="text" class="form-control" id="code" name="code" placeholder="Référence" required onkeydown="keyDown(event)">
             </div>
             <div class="form-group">
                 <label for="quantity">Quantité</label>
-                <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Quantité" required>
+                <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Quantité" required onkeydown="keyDown(event)">
             </div>
             <button class="btn btn-primary" onclick="submit()">Enregistrer</button>
         </div>
@@ -32,13 +32,15 @@
     <script src="{{ asset('js/common.js') }}"></script>
     <script src="{{ asset('js/create/supply.js') }}"></script>
     <script>
+        var mode = '';
+        var sendUrl = '';
         @if (isset($idSupply))
-            const MODE = 'edit';
-            var sendUrl = "{{ route('api.supplies.update', ['supply' => $idSupply])  }}"; // URl to send data
+            mode = 'edit';
+            sendUrl = "{{ route('api.supplies.update', ['supply' => $idSupply])  }}"; // URl to send data
             loadSupply("{{ route('api.supplies.show', ['supply' => $idSupply]) }}");
         @else
-            const MODE = 'create';
-            var sendUrl = "{{ route('api.supplies.store') }}";
+            mode = 'create';
+            sendUrl = "{{ route('api.supplies.store') }}";
         @endif
     </script>
 </x-app-layout>

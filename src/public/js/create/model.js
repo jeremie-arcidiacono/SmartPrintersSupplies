@@ -85,3 +85,10 @@ function error(data) {
     htmlString += '</ul>';
     alerts.append(htmlString);
 }
+
+function keyDown(event) {
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if (keycode == 13) {
+        submit();
+    }
+}

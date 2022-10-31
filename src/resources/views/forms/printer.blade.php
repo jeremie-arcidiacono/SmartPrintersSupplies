@@ -21,15 +21,15 @@
             </div>
             <div class="form-group">
                 <label for="room">Salle</label>
-                <input type="text" class="form-control" id="room" name="room" placeholder="Salle">
+                <input type="text" class="form-control" id="room" name="room" placeholder="Salle" onkeydown="keyDown(event)">
             </div>
             <div class="form-group">
                 <label for="serialNumber">Numéro de série</label>
-                <input type="text" class="form-control" id="serialNumber" name="serialNumber" placeholder="Numéro de série" required>
+                <input type="text" class="form-control" id="serialNumber" name="serialNumber" placeholder="Numéro de série" required onkeydown="keyDown(event)">
             </div>
             <div class="form-group">
                 <label for="cti">CTI</label>
-                <input type="text" class="form-control" id="cti" name="cti" placeholder="CTI" required minlength="6" maxlength="6">
+                <input type="text" class="form-control" id="cti" name="cti" placeholder="CTI" required minlength="6" maxlength="6" onkeydown="keyDown(event)">
             </div>
             <button class="btn btn-primary" onclick="submit()">Enregistrer</button>
         </div>
@@ -40,14 +40,16 @@
     <script>
         var modelUrl = '{{ route('api.models.index') }}';
         
+        var mode = '';
+        var sendUrl = '';
         loadModels().then(() => {
             @if (isset($idPrinter))
-                const MODE = 'edit';
-                var sendUrl = "{{ route('api.printers.update', ['printer' => $idPrinter])  }}"; // URl to send data
+                mode = 'edit';
+                sendUrl = "{{ route('api.printers.update', ['printer' => $idPrinter])  }}"; // URl to send data
                 loadPrinter("{{ route('api.printers.show', ['printer' => $idPrinter]) }}");     // The loadPrinter() need to be called after the loadModels() function
             @else
-                const MODE = 'create';
-                var sendUrl = "{{ route('api.printers.store') }}";
+                mode = 'create';
+                sendUrl = "{{ route('api.printers.store') }}";
             @endif
         });
     </script>
