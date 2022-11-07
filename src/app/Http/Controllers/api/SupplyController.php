@@ -203,27 +203,27 @@ class SupplyController extends Controller
         $initialDate = strtotime(Event::where('idSupply_target', $supply->idSupply)->where('action', 'create')->first()->created_at);
         $initialQuantity = Event::where('idSupply_target', $supply->idSupply)->where('action', 'create')->first()->amount;
 
-        $stockHistory[date('d-F-y', $initialDate)] = $initialQuantity;
+        $stockHistory[date('d-F Y', $initialDate)] = $initialQuantity;
 
         if ($request->has('showAll')) { // Show all months, even if there is no change in stock
-            $currentMonth = date('F-y', strtotime('now'));
-            $firstMonth = date('F-y', $initialDate);
+            $currentMonth = date('F Y', strtotime('now'));
+            $firstMonth = date('F Y', $initialDate);
 
             // Store all months between initialDate and now in the array
             $allMonths = [];
             $tmpTime = $firstMonth;
             do {
                 $allMonths[] = $tmpTime;
-                $tmpTime = date('F-y', strtotime($tmpTime . " + 1 month"));
+                $tmpTime = date('F Y', strtotime($tmpTime . " + 1 month"));
             } while ($allMonths[count($allMonths) - 1] != $currentMonth);
         }
 
         $events = Event::where('idSupply_target', $supply->idSupply)->where('action', 'changeAmount')->get();
 
         // Group events by month
-        $previousMonth = date('d-F-y', $initialDate);
+        $previousMonth = date('d-F Y', $initialDate);
         foreach ($events as $event) {
-            $month = date('F-y', strtotime($event->created_at));
+            $month = date('F Y', strtotime($event->created_at));
             if (!array_key_exists($month, $stockHistory)) {
 
                 if ($request->has('showAll')) {

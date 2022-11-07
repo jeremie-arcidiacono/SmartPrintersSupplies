@@ -100,3 +100,53 @@ function btnRemoveCompatibilityClicked(idPrinterModel) {
         callApiGet(compatibleModelsUrl, displayModelsTable);
     });
 }
+
+function displayChart(pData) {
+    pData = pData.data;
+    const ctx = document.getElementById('stockChart').getContext('2d');
+    ctx.clearRect(0, 0, ctx.width, ctx.height); // Clear the canvas before drawing the chart
+
+    // Transform the associative array into two arrays (labels and data)
+    const labels = Object.keys(pData);
+    const data = Object.values(pData);
+
+    const chartData = {
+        labels: labels,
+        datasets: [
+            {
+                type: 'line',
+                label: 'Tendance du stock',
+                data: data,
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                order: 1,
+                // Make the line rounded
+                cubicInterpolationMode: 'monotone',
+                tension: 0.5,
+            }, {
+                type: 'bar',
+                label: 'Quantité en stock',
+                data: data,
+                backgroundColor: 'rgba(255, 177, 193, 0.7)',
+                borderColor: 'rgba(255, 177, 193, 1)',
+                order: 2,
+            }]
+    };
+    const chartConfig = {
+        type: 'scatter',
+        data: chartData,
+        options: {
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Evolution de la quantité du stock'
+                }
+            }
+        },
+
+    };
+    const mainChart = new Chart(ctx, chartConfig);
+}
