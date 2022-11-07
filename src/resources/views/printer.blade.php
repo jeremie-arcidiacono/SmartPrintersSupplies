@@ -73,7 +73,7 @@
                 </table>
             </div>
         </div>
-        <div class="w-50 m-auto">
+        <div class="w-50 m-auto mt-3">
             <canvas id="eventsChart"></canvas>
         </div>
     </div>

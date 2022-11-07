@@ -95,6 +95,10 @@ function displayEventsChart(pData) {
     const ctx = document.getElementById('eventsChart').getContext('2d');
     ctx.clearRect(0, 0, ctx.width, ctx.height); // Clear the canvas before drawing the chart
 
+    if (pData.length <= 0) {
+        return;
+    }
+
     var events = []; // Array as : ['supplies01' => 3, 'supplies4' => 1, ...]
     pData.forEach(event => {
         // Check if the key event.target_supply.code is already in the array
@@ -131,7 +135,10 @@ function displayEventsChart(pData) {
                 },
                 title: {
                     display: true,
-                    text: 'Nombre d\'items consommés'
+                    text: 'Nombre d\'items consommés',
+                    font: {
+                        size: 15
+                    }
                 }
             }
         },

@@ -199,53 +199,55 @@ class SupplyController extends Controller
      */
     public function indexStockHistory(Request $request, Supply $supply): JsonResponse
     {
-        $stockHistory = [];
-        $initialDate = strtotime(Event::where('idSupply_target', $supply->idSupply)->where('action', 'create')->first()->created_at);
-        $initialQuantity = Event::where('idSupply_target', $supply->idSupply)->where('action', 'create')->first()->amount;
-
-        $stockHistory[date('d-F Y', $initialDate)] = $initialQuantity;
-
-        if ($request->has('showAll')) { // Show all months, even if there is no change in stock
-            $currentMonth = date('F Y', strtotime('now'));
-            $firstMonth = date('F Y', $initialDate);
-
-            // Store all months between initialDate and now in the array
-            $allMonths = [];
-            $tmpTime = $firstMonth;
-            do {
-                $allMonths[] = $tmpTime;
-                $tmpTime = date('F Y', strtotime($tmpTime . " + 1 month"));
-            } while ($allMonths[count($allMonths) - 1] != $currentMonth);
-        }
-
         $events = Event::where('idSupply_target', $supply->idSupply)->where('action', 'changeAmount')->get();
+        if (count($events) > 0) {
+            $stockHistory = [];
+            $initialDate = strtotime(Event::where('idSupply_target', $supply->idSupply)->where('action', 'create')->first()->created_at);
+            $initialQuantity = Event::where('idSupply_target', $supply->idSupply)->where('action', 'create')->first()->amount;
 
-        // Group events by month
-        $previousMonth = date('d-F Y', $initialDate);
-        foreach ($events as $event) {
-            $month = date('F Y', strtotime($event->created_at));
-            if (!array_key_exists($month, $stockHistory)) {
+            $stockHistory[date('d-F Y', $initialDate)] = $initialQuantity;
 
-                if ($request->has('showAll')) {
-                    // Fill the array with the month that have no event
-                    $start = array_search($previousMonth, $allMonths);
-                    if ($start === false) {
-                        $start = 0;
-                    }
-                    $end = array_search($month, $allMonths);
-                    for ($i = $start; $i < $end; $i++) {
-                        $stockHistory[$allMonths[$i]] = $stockHistory[$previousMonth];
-                    }
-                }
+            if ($request->has('showAll')) { // Show all months, even if there is no change in stock
+                $currentMonth = date('F Y', strtotime('now'));
+                $firstMonth = date('F Y', $initialDate);
 
-                $stockHistory[$month] = $stockHistory[$previousMonth] + $event->amount;
-                $previousMonth = $month;
-            } else {
-                // When there is already an event for this month, add the amount to the previous amount
-                $stockHistory[$month] += $event->amount;
+                // Store all months between initialDate and now in the array
+                $allMonths = [];
+                $tmpTime = $firstMonth;
+                do {
+                    $allMonths[] = $tmpTime;
+                    $tmpTime = date('F Y', strtotime($tmpTime . " + 1 month"));
+                } while ($allMonths[count($allMonths) - 1] != $currentMonth);
             }
-        }
 
-        return new JsonResponse(['data' => $stockHistory], 200);
+            // Group events by month
+            $previousMonth = date('d-F Y', $initialDate);
+            foreach ($events as $event) {
+                $month = date('F Y', strtotime($event->created_at));
+                if (!array_key_exists($month, $stockHistory)) {
+
+                    if ($request->has('showAll')) {
+                        // Fill the array with the month that have no event
+                        $start = array_search($previousMonth, $allMonths);
+                        if ($start === false) {
+                            $start = 0;
+                        }
+                        $end = array_search($month, $allMonths);
+                        for ($i = $start; $i < $end; $i++) {
+                            $stockHistory[$allMonths[$i]] = $stockHistory[$previousMonth];
+                        }
+                    }
+
+                    $stockHistory[$month] = $stockHistory[$previousMonth] + $event->amount;
+                    $previousMonth = $month;
+                } else {
+                    // When there is already an event for this month, add the amount to the previous amount
+                    $stockHistory[$month] += $event->amount;
+                }
+            }
+            return new JsonResponse(['data' => $stockHistory], 200);
+        } else {
+            return new JsonResponse([], 200);
+        }
     }
 }

@@ -102,7 +102,11 @@ function btnRemoveCompatibilityClicked(idPrinterModel) {
 }
 
 function displayChart(pData) {
+    if (pData.length <= 0) {
+        return;
+    }
     pData = pData.data;
+
     const ctx = document.getElementById('stockChart').getContext('2d');
     ctx.clearRect(0, 0, ctx.width, ctx.height); // Clear the canvas before drawing the chart
 
@@ -142,7 +146,10 @@ function displayChart(pData) {
                 },
                 title: {
                     display: true,
-                    text: 'Evolution de la quantité du stock'
+                    text: 'Evolution de la quantité du stock',
+                    font: {
+                        size: 20
+                    }
                 }
             }
         },
