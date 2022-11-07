@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Models\Event;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\Supply;
@@ -101,7 +102,7 @@ class SupplyController extends Controller
 
             $supply->save();
 
-            EventController::store(Auth::id(), 'create', ['idSupply' => $supply->idSupply]);
+            EventController::store(Auth::id(), 'create', ['idSupply' => $supply->idSupply], $validated['quantity']);
             return new JsonResponse([], 200);
         }
     }
@@ -187,5 +188,64 @@ class SupplyController extends Controller
     public function indexCompatibility(Supply $supply): JsonResponse
     {
         return new JsonResponse(['data' => $supply->models], 200);
+    }
+
+    /**
+     * Get the stock quantity of a supply foreach month
+     * Exemple: [initialDate => 10, initialDate + 1 month => 10, initialDate + 2 month => 6, initialDate + 2 month => 3]
+     * @param  Request $request
+     * @param  Supply $supply
+     * @return JsonResponse
+     */
+    public function indexStockHistory(Request $request, Supply $supply): JsonResponse
+    {
+        $stockHistory = [];
+        $initialDate = strtotime(Event::where('idSupply_target', $supply->idSupply)->where('action', 'create')->first()->created_at);
+        $initialQuantity = Event::where('idSupply_target', $supply->idSupply)->where('action', 'create')->first()->amount;
+
+        $stockHistory[date('d-F-y', $initialDate)] = $initialQuantity;
+
+        if ($request->has('showAll')) { // Show all months, even if there is no change in stock
+            $currentMonth = date('F-y', strtotime('now'));
+            $firstMonth = date('F-y', $initialDate);
+
+            // Store all months between initialDate and now in the array
+            $allMonths = [];
+            $tmpTime = $firstMonth;
+            do {
+                $allMonths[] = $tmpTime;
+                $tmpTime = date('F-y', strtotime($tmpTime . " + 1 month"));
+            } while ($allMonths[count($allMonths) - 1] != $currentMonth);
+        }
+
+        $events = Event::where('idSupply_target', $supply->idSupply)->where('action', 'changeAmount')->get();
+
+        // Group events by month
+        $previousMonth = date('d-F-y', $initialDate);
+        foreach ($events as $event) {
+            $month = date('F-y', strtotime($event->created_at));
+            if (!array_key_exists($month, $stockHistory)) {
+
+                if ($request->has('showAll')) {
+                    // Fill the array with the month that have no event
+                    $start = array_search($previousMonth, $allMonths);
+                    if ($start === false) {
+                        $start = 0;
+                    }
+                    $end = array_search($month, $allMonths);
+                    for ($i = $start; $i < $end; $i++) {
+                        $stockHistory[$allMonths[$i]] = $stockHistory[$previousMonth];
+                    }
+                }
+
+                $stockHistory[$month] = $stockHistory[$previousMonth] + $event->amount;
+                $previousMonth = $month;
+            } else {
+                // When there is already an event for this month, add the amount to the previous amount
+                $stockHistory[$month] += $event->amount;
+            }
+        }
+
+        return new JsonResponse(['data' => $stockHistory], 200);
     }
 }
