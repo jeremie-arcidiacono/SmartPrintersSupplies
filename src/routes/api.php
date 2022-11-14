@@ -25,6 +25,7 @@ Route::post('/printers', [PrinterController::class, 'store'])->name('api.printer
 Route::put('/printers/{printer}', [PrinterController::class, 'update'])->name('api.printers.update');
 Route::delete('/printers/{printer}', [PrinterController::class, 'destroy'])->name('api.printers.destroy')->withTrashed();
 Route::get('/printers/{printer}/events', [PrinterController::class, 'events'])->name('api.printers.events');
+Route::get('/printers/stats/mostActive', [PrinterController::class, 'mostActive'])->name('api.printers.mostActive');
 
 // Model routes
 Route::get('/models', [PrinterModelController::class, 'index'])->name('api.models.index');

@@ -172,4 +172,46 @@ class PrinterController extends Controller
     {
         return new JsonResponse(['data' => $printer->events()->where('action', 'changeAmount')->latest()->take(config('modelQuery.printer_nbEvent'))->get()], 200);
     }
+
+    /**
+     * Returns a list of printers with the highest consumption of consumables
+     * Client can set optional GET parameters:
+     *   - limit: number of printers to return
+     *   - supply: id of the supply to filter on
+     *   - startDate: start date of the period to filter on
+     *   - endDate: end date of the period to filter on
+     * 
+     * @param  Request $request
+     * @return JsonResponse
+     */
+    public function mostActive(Request $request): JsonResponse
+    {
+        $limit = $request->query('limit') ?: config('modelQuery.printer_nbMostActive');
+        $supply = $request->query('supply');
+        $startDate = $request->query('startDate');
+        $endDate = $request->query('endDate');
+
+        $printers = Printer::withSum(['events' => function (\Illuminate\Database\Eloquent\Builder $query) use ($supply, $startDate, $endDate) {
+            if ($supply) {
+                $query->where('idSupply_target', $supply);
+            }
+            if ($startDate) {
+                $query->where('created_at', '>=', $startDate);
+            }
+            if ($endDate) {
+                $query->where('created_at', '<=', $endDate);
+            }
+        }], 'amount')->get()->whereNotNull('events_sum_amount');
+
+
+        // Get the true sum (a positive value) of the consumed supplies
+        $printers = $printers->map(function ($printer) {
+            $printer->events_sum_amount = abs($printer->events_sum_amount);
+            return $printer;
+        });
+
+        $printers = $printers->sortByDesc('events_sum_amount')->take($limit)->values()->all();
+
+        return new JsonResponse(['data' => $printers], 200);
+    } 
 }

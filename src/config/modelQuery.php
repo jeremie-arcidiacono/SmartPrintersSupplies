@@ -6,6 +6,7 @@ return [
     'printer_sortOrder' => 'desc', // Default sortBy order
     'printer_sortColumn' => 'idPrinter', // Default sortBy column
     'printer_nbEvent' => 10,      // Default number of events to display on the detail page of a printer
+    'printer_nbMostActive' => 10, // Default number of most active printers to display on the statistics page
 
     'printerModel_perPage' => 25,     // Default number of models per page
     'printerModel_sortOrder' => 'desc', // Default sortBy order
