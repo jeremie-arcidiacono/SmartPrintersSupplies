@@ -90,8 +90,13 @@ function btnConsumeClicked(supplyId) {
     callApiPut(urlConsume, data, refreshTables);
 }
 
-
+let mainChart = null;
 function displayEventsChart(pData) {
+    // Ensure that the chart is destroyed before creating a new one
+    if (mainChart != null) {
+        mainChart.destroy();
+    }
+
     const ctx = document.getElementById('eventsChart').getContext('2d');
     ctx.clearRect(0, 0, ctx.width, ctx.height); // Clear the canvas before drawing the chart
 
@@ -144,5 +149,5 @@ function displayEventsChart(pData) {
         },
 
     };
-    const mainChart = new Chart(ctx, chartConfig);
+    mainChart = new Chart(ctx, chartConfig);
 }
