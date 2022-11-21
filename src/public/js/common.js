@@ -47,10 +47,15 @@ function callApiPut(url, data, callback, errorCallback) {
             callback(data);
         },
         error: function (xhr, ajaxOptions, thrownError) {
-            // We display the error message only if the error is a problem with the values the user has entered
-            if (xhr.status != 422) {
+            if (xhr.status === 422) {
+                let output = 'Veuillez vérifier les informations saisies : \n';
+                for (let key in xhr.responseJSON.errors) {
+                    output += xhr.responseJSON.errors[key] + '\n';
+                }
+                alert(output);
+            }
+            else {
                 alert('Une erreur est survenu lors de la modification des informations');
-                console.error('Error while calling API (URL : ' + url + ')');
             }
             if (errorCallback != null) {
                 errorCallback(xhr.responseJSON);
@@ -97,7 +102,7 @@ function deleteItem(url, redirectUrl) {
         // By default, we refresh the table after the deletion
         callApiDelete(url, refreshTable, function(data) {
             alert(data.errors);
-        }); 
+        });
     }
     else{
         callApiDelete(url, function(data) {

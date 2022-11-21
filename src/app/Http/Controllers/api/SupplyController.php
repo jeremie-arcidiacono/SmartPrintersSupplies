@@ -26,7 +26,7 @@ class SupplyController extends Controller
      *   - search: search string
      *   - quantityMin: minimum quantity of supplies
      *   - quantityMax: maximum quantity of supplies
-     * 
+     *
      * @param  Request $request
      * @return JsonResponse
      */
@@ -60,13 +60,13 @@ class SupplyController extends Controller
         else {
             $supplies = Supply::orderBy($sortColumn, $sortDir)->minqty($quantityMin)->maxqty($quantityMax)->paginate($nbPerPage);
         }
-        
+
         return new JsonResponse($supplies, 200);
     }
 
     /**
      * Returns a single supply
-     * 
+     *
      * @param  Supply $supply
      * @return JsonResponse
      */
@@ -140,15 +140,19 @@ class SupplyController extends Controller
             if ($request->has('quantity')) {
                 EventController::store(Auth::id(), 'changeAmount', ['idSupply' => $supply->idSupply], $validated['quantity'] - $supply->quantity);
                 $supply->quantity = $validated['quantity'];
-            } 
+            }
             else {
                 $printerModel = \App\Models\Printer::find($validated['idPrinter'])->model;
                 if ($supply->models && $supply->models->contains($printerModel)) {
                     if ($request->has('addQuantity')) {
                         $supply->quantity += $validated['addQuantity'];
                         EventController::store(Auth::id(), 'changeAmount', ['idSupply' => $supply->idSupply, 'idPrinter' => $validated['idPrinter']], $validated['addQuantity']);
-                    } 
+                    }
                     else if ($request->has('removeQuantity')) {
+                        if ($validated['removeQuantity'] >= $supply->quantity) {
+                            return new JsonResponse(['errors' => ['quantity' => ['The stock is not high enough to remove this quantity']]], 422);
+                        }
+
                         $supply->quantity -= $validated['removeQuantity'];
                         EventController::store(Auth::id(), 'changeAmount', ['idSupply' => $supply->idSupply, 'idPrinter' => $validated['idPrinter']], -$validated['removeQuantity']);
                     }
@@ -157,7 +161,7 @@ class SupplyController extends Controller
                     return new JsonResponse(['errors' => ['idPrinter' => ['Printer model does not have a compability with this supply']]], 422);
                 }
             }
-            
+
             $supply->save();
             return new JsonResponse([], 200);
         }
