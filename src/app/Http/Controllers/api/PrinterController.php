@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\Printer;
@@ -25,7 +26,7 @@ class PrinterController extends Controller
      *     - dir: sort direction (asc or desc)
      *   - search: search string
      *     - searchColumn: column to search in
-     * 
+     *
      * @param  Request $request
      * @return JsonResponse
      */
@@ -58,13 +59,13 @@ class PrinterController extends Controller
             // Send all printers
             $printers = Printer::orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
         }
-        
+
         return new JsonResponse($printers, 200);
     }
 
     /**
      * Returns a single printer
-     * 
+     *
      * @param  Printer $printer
      * @return JsonResponse
      */
@@ -160,7 +161,7 @@ class PrinterController extends Controller
             $printer->delete();
             EventController::store(Auth::id(), 'delete', ['idPrinter' => $printer->idPrinter]);
             return new JsonResponse([], 200);
-        }  
+        }
     }
 
     /**
@@ -178,9 +179,9 @@ class PrinterController extends Controller
      * Client can set optional GET parameters:
      *   - limit: number of printers to return
      *   - supply: id of the supply to filter on
-     *   - startDate: start date of the period to filter on
-     *   - endDate: end date of the period to filter on
-     * 
+     *   - startDate: start date of the period to filter on (inclusive)
+     *   - endDate: end date of the period to filter on (inclusive)
+     *
      * @param  Request $request
      * @return JsonResponse
      */
@@ -190,6 +191,11 @@ class PrinterController extends Controller
         $supply = $request->query('supply');
         $startDate = $request->query('startDate');
         $endDate = $request->query('endDate');
+
+        // Make endDate inclusive
+        if ($endDate) {
+            $endDate = Carbon::parse($endDate)->addDay();
+        }
 
         $printers = Printer::withSum(['events' => function (\Illuminate\Database\Eloquent\Builder $query) use ($supply, $startDate, $endDate) {
             if ($supply) {
@@ -213,5 +219,5 @@ class PrinterController extends Controller
         $printers = $printers->sortByDesc('events_sum_amount')->take($limit)->values()->all();
 
         return new JsonResponse(['data' => $printers], 200);
-    } 
+    }
 }

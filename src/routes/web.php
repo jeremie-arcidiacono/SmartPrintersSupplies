@@ -45,7 +45,7 @@ Route::prefix('models')->group(function () {
     Route::get('/', function () {
         return view('tables.models');
     })->middleware(['auth'])->name('models.index');
-    
+
     Route::get('/create', function () {
         return view('forms.model');
     })->middleware(['auth'])->name('models.create');
@@ -81,6 +81,11 @@ Route::get('/events/object', function () {
     return view('events.object');
 })->middleware(['auth'])->name('events.object');
 
+Route::prefix('statistics')->group(function () {
+    Route::get('/mostActivePrinters', function () {
+        return view('statistics.mostActivePrinters');
+    })->middleware(['auth'])->name('statistics.mostActivePrinters');
+});
 
 Route::get('/users', function () {
     return view('tables.users');

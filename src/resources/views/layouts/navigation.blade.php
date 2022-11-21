@@ -21,7 +21,7 @@
             </x-nav-link>
         </li>
         <li class="mb-2 py-1 ps-1">
-          <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 py-0" data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="true">
+          <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 py-0" data-bs-toggle="collapse" data-bs-target="#orders-collapse1" aria-expanded="true">
             <i class="bi bi-card-list me-1" width="16" height="16"></i>
             Historique
           </button>
@@ -33,7 +33,7 @@
               $show = "";
             } 
           @endphp
-          <div class="collapse {{$show}}" id="orders-collapse" style="">
+          <div class="collapse {{$show}}" id="orders-collapse1" style="">
             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
               <li class="ms-3">
                 <x-nav-link :href="route('events.consumption')" :active="request()->routeIs('events.consumption')">
@@ -48,6 +48,30 @@
             </ul>
           </div>
         </li>
+        <li class="mb-2 py-1 ps-1">
+          <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 py-0" data-bs-toggle="collapse" data-bs-target="#orders-collapse2" aria-expanded="true">
+            <i class="bi bi-bar-chart me-1" width="16" height="16"></i>
+            Statistiques
+          </button>
+          @php
+            // Choose if the collapse is expanded or not by default
+            if (request()->routeIs('statistics.*')) {
+              $show = "show";
+            }  else {
+              $show = "";
+            } 
+          @endphp
+          <div class="collapse {{$show}}" id="orders-collapse2" style="">
+            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+              <li class="ms-3">
+                <x-nav-link :href="route('statistics.mostActivePrinters')" :active="request()->routeIs('statistics.mostActivePrinters')">
+                {{ __(' Imprimantes les plus actives') }}
+                </x-nav-link>
+              </li>
+            </ul>
+          </div>
+        </li>
+
         <li class="mb-2 py-1">
           <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')" logoName="people-fill">
             {{ __('Utilisateurs') }}
