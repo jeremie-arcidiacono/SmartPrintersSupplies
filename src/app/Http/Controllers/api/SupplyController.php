@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Enum\EventAction;
 use App\Models\Event;
+use App\Models\Printer;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\Supply;
@@ -27,16 +29,18 @@ class SupplyController extends Controller
      *   - quantityMin: minimum quantity of supplies
      *   - quantityMax: maximum quantity of supplies
      *
-     * @param  Request $request
+     * @param Request $request
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
         // Get the number of supplies per page from the GET parameter or from the app config
-        if ($request->query('perPage') && is_numeric($request->query('perPage')))
+        if ($request->query('perPage') && is_numeric($request->query('perPage'))) {
             $nbPerPage = $request->query('perPage');
-        else
+        }
+        else {
             $nbPerPage = config('modelQuery.supply_perPage');
+        }
 
         // Get the sorting options from the GET parameter
         $sortColumn = $request->query('sort') ?: config('modelQuery.supply_sortColumn');
@@ -51,14 +55,18 @@ class SupplyController extends Controller
             $quantityMax = $request->query('quantityMax');
         }
 
-        if($request->query('search')){
+        if ($request->query('search')) {
             // Send supplies where the code contains the search term
             $searchTerm = $request->query('search');
 
-            $supplies = Supply::where('code', 'like', '%' . $searchTerm . '%')->minqty($quantityMin)->maxqty($quantityMax)->orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
+            $supplies = Supply::where('code', 'like', '%' . $searchTerm . '%')->minqty($quantityMin)->maxqty(
+                $quantityMax
+            )->orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
         }
         else {
-            $supplies = Supply::orderBy($sortColumn, $sortDir)->minqty($quantityMin)->maxqty($quantityMax)->paginate($nbPerPage);
+            $supplies = Supply::orderBy($sortColumn, $sortDir)->minqty($quantityMin)->maxqty($quantityMax)->paginate(
+                $nbPerPage
+            );
         }
 
         return new JsonResponse($supplies, 200);
@@ -67,7 +75,7 @@ class SupplyController extends Controller
     /**
      * Returns a single supply
      *
-     * @param  Supply $supply
+     * @param Supply $supply
      * @return JsonResponse
      */
     public function show(Supply $supply): JsonResponse
@@ -77,7 +85,7 @@ class SupplyController extends Controller
 
     /**
      * Stores a supply in the database
-     * @param  Request $request
+     * @param Request $request
      * @return JsonResponse
      */
     public function store(Request $request): JsonResponse
@@ -94,7 +102,7 @@ class SupplyController extends Controller
         else {
             $validated = $validator->validated();
 
-            $supply = new Supply;
+            $supply = new Supply();
 
             $supply->brand = $validated['brand'];
             $supply->code = $validated['code'];
@@ -102,18 +110,23 @@ class SupplyController extends Controller
 
             $supply->save();
 
-            EventController::store(Auth::id(), 'create', ['idSupply' => $supply->idSupply], $validated['quantity']);
+            EventController::store(
+                Auth::id(),
+                EventAction::create,
+                ['idSupply' => $supply->idSupply],
+                $validated['quantity']
+            );
             return new JsonResponse([], 200);
         }
     }
 
     /**
      * Updates a supplies in the database
-     * @param  Request $request
-     * @param  Supply $supply
+     * @param Request $request
+     * @param Supply $supply
      * @return JsonResponse
      */
-    public function update(Request $request, Supply $supply)
+    public function update(Request $request, Supply $supply): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'brand' => ['string', 'max:20'],
@@ -138,27 +151,48 @@ class SupplyController extends Controller
             }
 
             if ($request->has('quantity')) {
-                EventController::store(Auth::id(), 'changeAmount', ['idSupply' => $supply->idSupply], $validated['quantity'] - $supply->quantity);
+                EventController::store(
+                    Auth::id(),
+                    EventAction::changeAmount,
+                    ['idSupply' => $supply->idSupply],
+                    $validated['quantity'] - $supply->quantity
+                );
                 $supply->quantity = $validated['quantity'];
             }
             else {
-                $printerModel = \App\Models\Printer::find($validated['idPrinter'])->model;
+                $printerModel = Printer::find($validated['idPrinter'])->model;
                 if ($supply->models && $supply->models->contains($printerModel)) {
                     if ($request->has('addQuantity')) {
                         $supply->quantity += $validated['addQuantity'];
-                        EventController::store(Auth::id(), 'changeAmount', ['idSupply' => $supply->idSupply, 'idPrinter' => $validated['idPrinter']], $validated['addQuantity']);
+                        EventController::store(
+                            Auth::id(),
+                            EventAction::changeAmount,
+                            ['idSupply' => $supply->idSupply, 'idPrinter' => $validated['idPrinter']],
+                            $validated['addQuantity']
+                        );
                     }
-                    else if ($request->has('removeQuantity')) {
+                    elseif ($request->has('removeQuantity')) {
                         if ($validated['removeQuantity'] >= $supply->quantity) {
-                            return new JsonResponse(['errors' => ['quantity' => ['The stock is not high enough to remove this quantity']]], 422);
+                            return new JsonResponse(
+                                ['errors' => ['quantity' => ['The stock is not high enough to remove this quantity']]],
+                                422
+                            );
                         }
 
                         $supply->quantity -= $validated['removeQuantity'];
-                        EventController::store(Auth::id(), 'changeAmount', ['idSupply' => $supply->idSupply, 'idPrinter' => $validated['idPrinter']], -$validated['removeQuantity']);
+                        EventController::store(
+                            Auth::id(),
+                            EventAction::changeAmount,
+                            ['idSupply' => $supply->idSupply, 'idPrinter' => $validated['idPrinter']],
+                            -$validated['removeQuantity']
+                        );
                     }
                 }
                 else {
-                    return new JsonResponse(['errors' => ['idPrinter' => ['Printer model does not have a compability with this supply']]], 422);
+                    return new JsonResponse(
+                        ['errors' => ['idPrinter' => ['Printer model does not have a compatibility with this supply']]],
+                        422
+                    );
                 }
             }
 
@@ -169,24 +203,24 @@ class SupplyController extends Controller
 
     /**
      * Soft deletes a supply from the database
-     * @param  Supply $supply
+     * @param Supply $supply
      * @return JsonResponse
      */
-    public function destroy(Supply $supply)
+    public function destroy(Supply $supply): JsonResponse
     {
         if ($supply->trashed()) {
             return new JsonResponse(['errors' => 'This supplies has already been deleted'], 422);
         }
         else {
             $supply->delete();
-            EventController::store(Auth::id(), 'delete', ['idSupply' => $supply->idSupply]);
+            EventController::store(Auth::id(), EventAction::delete, ['idSupply' => $supply->idSupply]);
             return new JsonResponse([], 200);
         }
     }
 
     /**
      * Returns the list of printer models that use this supply
-     * @param  Supply $supply
+     * @param Supply $supply
      * @return JsonResponse
      */
     public function indexCompatibility(Supply $supply): JsonResponse
@@ -197,8 +231,8 @@ class SupplyController extends Controller
     /**
      * Get the stock quantity of a supply foreach month
      * Exemple: [initialDate => 10, initialDate + 1 month => 10, initialDate + 2 month => 6, initialDate + 2 month => 3]
-     * @param  Request $request
-     * @param  Supply $supply
+     * @param Request $request
+     * @param Supply $supply
      * @return JsonResponse
      */
     public function indexStockHistory(Request $request, Supply $supply): JsonResponse
@@ -206,8 +240,11 @@ class SupplyController extends Controller
         $events = Event::where('idSupply_target', $supply->idSupply)->where('action', 'changeAmount')->get();
         if (count($events) > 0) {
             $stockHistory = [];
-            $initialDate = strtotime(Event::where('idSupply_target', $supply->idSupply)->where('action', 'create')->first()->created_at);
-            $initialQuantity = Event::where('idSupply_target', $supply->idSupply)->where('action', 'create')->first()->amount;
+            $initialDate = strtotime(
+                Event::where('idSupply_target', $supply->idSupply)->where('action', 'create')->first()->created_at
+            );
+            $initialQuantity = Event::where('idSupply_target', $supply->idSupply)->where('action', 'create')->first(
+            )->amount;
 
             $stockHistory[date('d-F Y', $initialDate)] = $initialQuantity;
 
@@ -229,7 +266,6 @@ class SupplyController extends Controller
             foreach ($events as $event) {
                 $month = date('F Y', strtotime($event->created_at));
                 if (!array_key_exists($month, $stockHistory)) {
-
                     if ($request->has('showAll')) {
                         // Fill the array with the month that have no event
                         $start = array_search($previousMonth, $allMonths);
@@ -244,13 +280,15 @@ class SupplyController extends Controller
 
                     $stockHistory[$month] = $stockHistory[$previousMonth] + $event->amount;
                     $previousMonth = $month;
-                } else {
+                }
+                else {
                     // When there is already an event for this month, add the amount to the previous amount
                     $stockHistory[$month] += $event->amount;
                 }
             }
             return new JsonResponse(['data' => $stockHistory], 200);
-        } else {
+        }
+        else {
             return new JsonResponse([], 200);
         }
     }

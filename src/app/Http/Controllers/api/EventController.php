@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Enum\EventAction;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\Event;
@@ -24,24 +25,26 @@ class EventController extends Controller
      *   - sortOrder: sort column of events
      *     - dir: sort direction (asc or desc)
      *   - type: (array) actions of the event
-     *  
+     *
      * Client can also search for values in multiple columns:
      *  - search: Associated array of columns and values to search
      *  Accepted keys:
-     *   - author: user name of the author of the event
+     *   - author: username of the author of the event
      *   - printerCti: cti of the target printer
      *   - supply: code of the target supply
-     * 
-     * @param  Request $request
+     *
+     * @param Request $request
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
         // Get the number of events per page from the GET parameter or from the app config
-        if ($request->query('perPage') && is_numeric($request->query('perPage')))
+        if ($request->query('perPage') && is_numeric($request->query('perPage'))) {
             $nbPerPage = $request->query('perPage');
-        else
+        }
+        else {
             $nbPerPage = config('modelQuery.event_perPage');
+        }
 
         // Get the sorting options from the GET parameter
         $sortColumn = $request->query('sort') ?: config('modelQuery.event_sortColumn');
@@ -62,35 +65,35 @@ class EventController extends Controller
             }
         }
 
-        if($request->query('search')){
+        if ($request->query('search')) {
             if ($arrSearch['printerCti'] != '') {
                 // Send events where all searchable columns match the search values
                 $events = Event::whereRelation('author', 'username', 'LIKE', '%' . $arrSearch['author'] . '%')
-                            ->whereRelation('targetPrinter', 'cti', 'LIKE', '%' . $arrSearch['printerCti'] . '%')
-                            ->whereRelation('targetSupply', 'code', 'LIKE', '%' . $arrSearch['supply'] . '%')
-                            ->type($type)
-                            ->orderBy($sortColumn, $sortDir)
-                            ->paginate($nbPerPage);
+                    ->whereRelation('targetPrinter', 'cti', 'LIKE', '%' . $arrSearch['printerCti'] . '%')
+                    ->whereRelation('targetSupply', 'code', 'LIKE', '%' . $arrSearch['supply'] . '%')
+                    ->type($type)
+                    ->orderBy($sortColumn, $sortDir)
+                    ->paginate($nbPerPage);
             }
             else {
-                // Send events where searchable columns match the search values (execpt printer cti, because some event don't have a printer related to them)
+                // Send events where searchable columns match the search values (except printer cti, because some event don't have a printer related to them)
                 $events = Event::whereRelation('author', 'username', 'LIKE', '%' . $arrSearch['author'] . '%')
-                            ->whereRelation('targetSupply', 'code', 'LIKE', '%' . $arrSearch['supply'] . '%')
-                            ->type($type)
-                            ->orderBy($sortColumn, $sortDir)
-                            ->paginate($nbPerPage);
+                    ->whereRelation('targetSupply', 'code', 'LIKE', '%' . $arrSearch['supply'] . '%')
+                    ->type($type)
+                    ->orderBy($sortColumn, $sortDir)
+                    ->paginate($nbPerPage);
             }
         }
         else {
             $events = Event::orderBy($sortColumn, $sortDir)->type($type)->paginate($nbPerPage);
         }
-        
+
         return new JsonResponse($events, 200);
     }
 
     /**
      * Returns a single event
-     * @param  Event $event
+     * @param Event $event
      * @return JsonResponse
      */
     public function show(Event $event): JsonResponse
@@ -99,16 +102,21 @@ class EventController extends Controller
     }
 
     /**
-     * Stores a event in the database
-     * @param  int $idAuthor
-     * @param  string $action
-     * @param  string $comment
-     * @param  int $amount
-     * @param  array $arrTargets
+     * Stores an event in the database
+     * @param int $idAuthor
+     * @param EventAction $action
+     * @param array $arrTargets
+     * @param int|null $amount
+     * @param string|null $comment
      * @return bool
      */
-    public static function store(int $idAuthor, string $action, array $arrTargets = [], int $amount = null, string $comment = null): bool
-    {
+    public static function store(
+        int $idAuthor,
+        EventAction $action,
+        array $arrTargets = [],
+        int $amount = null,
+        string $comment = null
+    ): bool {
         $targetValidator = Validator::make($arrTargets, [
             'idPrinter' => ['numeric', 'exists:App\Models\Printer,idPrinter'],
             'idSupply' => ['numeric', 'exists:App\Models\Supply,idSupply'],
@@ -117,17 +125,22 @@ class EventController extends Controller
         ]);
 
         if ($targetValidator->fails()) {
-            Log::error("Invalid target for event, validator errors:"  . json_encode($targetValidator->errors()->messages()) . ", targets: " . json_encode($arrTargets));
+            Log::error(
+                "Invalid target for event, validator errors:" . json_encode(
+                    $targetValidator->errors()->messages()
+                ) . ", targets: " . json_encode($arrTargets)
+            );
             return false;
         }
-        else{
+        else {
             $event = new Event();
 
             $event->idUser_author = $idAuthor;
+            //$event->action = EventAction::tryFrom($action) ?? EventAction::info();
             $event->action = $action;
             $event->comment = $comment;
             $event->amount = $amount;
-    
+
             if (array_key_exists('idPrinter', $arrTargets)) {
                 $event->idPrinter_target = $arrTargets['idPrinter'];
             }
@@ -140,10 +153,10 @@ class EventController extends Controller
             if (array_key_exists('idUser', $arrTargets)) {
                 $event->idUser_target = $arrTargets['idUser'];
             }
-    
+
             $event->save();
-            return true;    
+            return true;
         }
     }
-    
+
 }

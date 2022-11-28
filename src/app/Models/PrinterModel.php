@@ -7,10 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Date;
 
+/**
+ * @property int $idPrinterModel
+ * @property string $brand
+ * @property string $name
+ * @property Date $created_at
+ * @property Date $deleted_at
+ * @property Printer[] $printers
+ * @property Supply[] $supplies
+ */
 class PrinterModel extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     public $timestamps = false;
     protected $primaryKey = "idPrinterModel";

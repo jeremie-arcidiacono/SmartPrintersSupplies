@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Enum\EventAction;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\Printer;
@@ -27,33 +29,41 @@ class PrinterController extends Controller
      *   - search: search string
      *     - searchColumn: column to search in
      *
-     * @param  Request $request
+     * @param Request $request
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
         // Get the number of printers per page from the GET parameter or from the app config
-        if ($request->query('perPage') && is_numeric($request->query('perPage')))
+        if ($request->query('perPage') && is_numeric($request->query('perPage'))) {
             $nbPerPage = $request->query('perPage');
-        else
+        }
+        else {
             $nbPerPage = config('modelQuery.printer_perPage');
+        }
 
         // Get the sorting options from the GET parameter
         $sortColumn = $request->query('sort') ?: config('modelQuery.printer_sortColumn');
         $sortDir = $request->query('dir') ?: config('modelQuery.printer_sortOrder');
 
-        if($request->query('search')){
+        if ($request->query('search')) {
             // Send printers where a column contains the search term
             $searchTerm = $request->query('search');
             $searchColumn = $request->query('searchColumn');
 
-            $printers = Printer::where($searchColumn, 'like', '%' . $searchTerm . '%')->orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
+            $printers = Printer::where($searchColumn, 'like', '%' . $searchTerm . '%')->orderBy(
+                $sortColumn,
+                $sortDir
+            )->paginate($nbPerPage);
         }
-        else if($request->query('searchModel')){
+        elseif ($request->query('searchModel')) {
             // Send printers where the model contains the search term
             $searchTerm = $request->query('searchModel');
 
-            $printers = Printer::whereRelation('model', 'name', 'like', '%' . $searchTerm . '%')->orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
+            $printers = Printer::whereRelation('model', 'name', 'like', '%' . $searchTerm . '%')->orderBy(
+                $sortColumn,
+                $sortDir
+            )->paginate($nbPerPage);
         }
         else {
             // Send all printers
@@ -66,7 +76,7 @@ class PrinterController extends Controller
     /**
      * Returns a single printer
      *
-     * @param  Printer $printer
+     * @param Printer $printer
      * @return JsonResponse
      */
     public function show(Printer $printer): JsonResponse
@@ -76,7 +86,7 @@ class PrinterController extends Controller
 
     /**
      * Stores a printer in the database
-     * @param  Request $request
+     * @param Request $request
      * @return JsonResponse
      */
     public function store(Request $request): JsonResponse
@@ -94,7 +104,7 @@ class PrinterController extends Controller
         else {
             $validated = $validator->validated();
 
-            $printer = new Printer;
+            $printer = new Printer();
 
             $printer->printer_model_idPrinterModel = $validated['idModel'];
             $printer->room = $validated['room'];
@@ -103,18 +113,18 @@ class PrinterController extends Controller
 
             $printer->save();
 
-            EventController::store(Auth::id(), 'create', ['idPrinter' => $printer->idPrinter]);
+            EventController::store(Auth::id(), EventAction::create, ['idPrinter' => $printer->idPrinter]);
             return new JsonResponse([], 200);
         }
     }
 
     /**
      * Updates a printer in the database
-     * @param  Request $request
-     * @param  Printer $printer
+     * @param Request $request
+     * @param Printer $printer
      * @return JsonResponse
      */
-    public function update(Request $request, Printer $printer)
+    public function update(Request $request, Printer $printer): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'idModel' => ['numeric', 'exists:App\Models\PrinterModel,idPrinterModel'],
@@ -149,29 +159,31 @@ class PrinterController extends Controller
 
     /**
      * Soft deletes a printer from the database
-     * @param  Printer $printer
+     * @param Printer $printer
      * @return JsonResponse
      */
-    public function destroy(Printer $printer)
+    public function destroy(Printer $printer): JsonResponse
     {
         if ($printer->trashed()) {
             return new JsonResponse(['errors' => 'This printer has already been deleted'], 422);
         }
         else {
             $printer->delete();
-            EventController::store(Auth::id(), 'delete', ['idPrinter' => $printer->idPrinter]);
+            EventController::store(Auth::id(), EventAction::delete, ['idPrinter' => $printer->idPrinter]);
             return new JsonResponse([], 200);
         }
     }
 
     /**
-     * Return a list of the recents events of a printer
-     * @param  Printer $printer
+     * Return a list of the recent events of a printer
+     * @param Printer $printer
      * @return JsonResponse
      */
     public function events(Printer $printer): JsonResponse
     {
-        return new JsonResponse(['data' => $printer->events()->where('action', 'changeAmount')->latest()->get()], 200);
+        return new JsonResponse(
+            ['data' => $printer->events()->where('action', EventAction::changeAmount)->latest()->get()], 200
+        );
     }
 
     /**
@@ -182,7 +194,7 @@ class PrinterController extends Controller
      *   - startDate: start date of the period to filter on (inclusive)
      *   - endDate: end date of the period to filter on (inclusive)
      *
-     * @param  Request $request
+     * @param Request $request
      * @return JsonResponse
      */
     public function mostActive(Request $request): JsonResponse
@@ -197,17 +209,19 @@ class PrinterController extends Controller
             $endDate = Carbon::parse($endDate)->addDay();
         }
 
-        $printers = Printer::withSum(['events' => function (\Illuminate\Database\Eloquent\Builder $query) use ($supply, $startDate, $endDate) {
-            if ($supply) {
-                $query->where('idSupply_target', $supply);
+        $printers = Printer::withSum([
+            'events' => function (Builder $query) use ($supply, $startDate, $endDate) {
+                if ($supply) {
+                    $query->where('idSupply_target', $supply);
+                }
+                if ($startDate) {
+                    $query->where('created_at', '>=', $startDate);
+                }
+                if ($endDate) {
+                    $query->where('created_at', '<=', $endDate);
+                }
             }
-            if ($startDate) {
-                $query->where('created_at', '>=', $startDate);
-            }
-            if ($endDate) {
-                $query->where('created_at', '<=', $endDate);
-            }
-        }], 'amount')->get()->whereNotNull('events_sum_amount');
+        ], 'amount')->get()->whereNotNull('events_sum_amount');
 
 
         // Get the true sum (a positive value) of the consumed supplies

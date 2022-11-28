@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enum\EventAction;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
@@ -48,7 +49,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        EventController::store(Auth::id(), 'userCreated', ['idUser' => $user->idUser]);
+        EventController::store(Auth::id(), EventAction::userCreated, ['idUser' => $user->idUser]);
 
         return view('auth.register', ['successful' => true]);
     }

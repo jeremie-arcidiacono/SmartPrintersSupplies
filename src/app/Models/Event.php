@@ -6,7 +6,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
+use Carbon\Traits\Date;
+use App\Enum\EventAction;
 
+/**
+ * @property int $idEvent
+ * @property int $idUser_author
+ * @property EventAction $action
+ * @property string|null $comment
+ * @property int|null $amount
+ * @property Date $created_at
+ *
+ * @property int|null $idPrinter_target
+ * @property int|null $idSupply_target
+ * @property int|null $idPrinterModel_target
+ * @property int|null $idUser_target
+ */
 class Event extends Model
 {
     use HasFactory;
@@ -19,7 +34,7 @@ class Event extends Model
      *
      * @var array
      */
-    protected $with = ['author', 'targetPrinter', 'targetSupply', 'targetModel' ,'targetUser'];
+    protected $with = ['author', 'targetPrinter', 'targetSupply', 'targetModel', 'targetUser'];
 
     public function author(): BelongsTo
     {
@@ -49,16 +64,16 @@ class Event extends Model
     /**
      * Scope a query to only include the events that match one or more types.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  int  $authorId
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @param array $arrTypes
+     * @return Builder
      */
-    public function scopeType($query, array $arrTypes = []): Builder
+    public function scopeType(Builder $query, array $arrTypes = []): Builder
     {
         if (empty($arrTypes)) {
             return $query;
         }
-        else{
+        else {
             return $query->whereIn('action', $arrTypes);
         }
     }

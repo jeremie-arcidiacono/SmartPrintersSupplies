@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Enum\EventAction;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\PrinterModel;
@@ -24,39 +25,44 @@ class PrinterModelController extends Controller
      *   - sortOrder: sort column of models
      *     - dir: sort direction (asc or desc)
      *   - search: search string
-     * 
-     * @param  Request $request
+     *
+     * @param Request $request
      * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
         // Get the number of models per page from the GET parameter or from the app config
-        if ($request->query('perPage') && is_numeric($request->query('perPage')))
+        if ($request->query('perPage') && is_numeric($request->query('perPage'))) {
             $nbPerPage = $request->query('perPage');
-        else
+        }
+        else {
             $nbPerPage = config('modelQuery.printerModel_perPage');
+        }
 
         // Get the sorting option from the GET parameter
         $sortColumn = $request->query('sort') ?: config('modelQuery.printerModel_sortColumn');
         $sortDir = $request->query('dir') ?: config('modelQuery.printerModel_sortOrder');
 
-        if($request->query('search')){
+        if ($request->query('search')) {
             // Send models where the name contains the search term
             $searchTerm = $request->query('search');
 
-            $printerModels = PrinterModel::where('name', 'like', '%' . $searchTerm . '%')->orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
+            $printerModels = PrinterModel::where('name', 'like', '%' . $searchTerm . '%')->orderBy(
+                $sortColumn,
+                $sortDir
+            )->paginate($nbPerPage);
         }
         else {
             $printerModels = PrinterModel::orderBy($sortColumn, $sortDir)->paginate($nbPerPage);
         }
-        
+
         return new JsonResponse($printerModels, 200);
     }
 
     /**
      * Returns a single model
-     * 
-     * @param  PrinterModel $printerModel
+     *
+     * @param PrinterModel $printerModel
      * @return JsonResponse
      */
     public function show(PrinterModel $printerModel): JsonResponse
@@ -66,7 +72,7 @@ class PrinterModelController extends Controller
 
     /**
      * Stores a model in the database
-     * @param  Request $request
+     * @param Request $request
      * @return JsonResponse
      */
     public function store(Request $request): JsonResponse
@@ -82,25 +88,25 @@ class PrinterModelController extends Controller
         else {
             $validated = $validator->validated();
 
-            $printerModel = new PrinterModel;
+            $printerModel = new PrinterModel();
 
             $printerModel->name = $validated['name'];
             $printerModel->brand = $validated['brand'];
 
             $printerModel->save();
-            
-            EventController::store(Auth::id(), 'create', ['idModel' => $printerModel->idPrinterModel]);
+
+            EventController::store(Auth::id(), EventAction::create, ['idModel' => $printerModel->idPrinterModel]);
             return new JsonResponse([], 200);
         }
     }
 
     /**
      * Updates a model in the database
-     * @param  Request $request
-     * @param  PrinterModel $printerModel
+     * @param Request $request
+     * @param PrinterModel $printerModel
      * @return JsonResponse
      */
-    public function update(Request $request, PrinterModel $printerModel)
+    public function update(Request $request, PrinterModel $printerModel): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:60', Rule::unique('printerModels')->ignore($printerModel)],
@@ -122,29 +128,32 @@ class PrinterModelController extends Controller
 
     /**
      * Soft deletes a model from the database (only if there is no other printer use it)
-     * @param  PrinterModel $printerModel
+     * @param PrinterModel $printerModel
      * @return JsonResponse
      */
-    public function destroy(PrinterModel $printerModel)
+    public function destroy(PrinterModel $printerModel): JsonResponse
     {
         if ($printerModel->trashed()) {
             return new JsonResponse(['errors' => 'This model of printer has already been deleted'], 422);
         }
+        elseif ($printerModel->printers->count() > 0) {
+            return new JsonResponse(
+                [
+                    'errors' => 'This model of printer has ' . $printerModel->printers->count(
+                        ) . ' active printers ! Delete the printers before'
+                ], 422
+            );
+        }
         else {
-            if ($printerModel->printers->count() > 0) {
-                return new JsonResponse(['errors' => 'This model of printer has ' . $printerModel->printers->count() . ' active printers ! Delete the printers before'], 422);
-            }
-            else {
-                $printerModel->delete();
-                EventController::store(Auth::id(), 'delete', ['idModel' => $printerModel->idPrinterModel]);
-                return new JsonResponse([], 200);
-            }
-        }  
+            $printerModel->delete();
+            EventController::store(Auth::id(), EventAction::delete, ['idModel' => $printerModel->idPrinterModel]);
+            return new JsonResponse([], 200);
+        }
     }
 
     /**
      * Returns the list of supplies used by the printer model.
-     * @param  PrinterModel $printerModel
+     * @param PrinterModel $printerModel
      * @return JsonResponse
      */
     public function indexCompatibility(PrinterModel $printerModel): JsonResponse
@@ -154,8 +163,8 @@ class PrinterModelController extends Controller
 
     /**
      * Adds a supply to the printer model.
-     * @param  Request $request
-     * @param  PrinterModel $printerModel
+     * @param Request $request
+     * @param PrinterModel $printerModel
      * @return JsonResponse
      */
     public function storeCompatibility(Request $request, PrinterModel $printerModel): JsonResponse
@@ -177,8 +186,8 @@ class PrinterModelController extends Controller
 
     /**
      * Removes a supply from the printer model.
-     * @param  PrinterModel $printerModel
-     * @param  Supply $supply
+     * @param PrinterModel $printerModel
+     * @param Supply $supply
      * @return JsonResponse
      */
     public function destroyCompatibility(PrinterModel $printerModel, Supply $supply): JsonResponse

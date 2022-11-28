@@ -2,14 +2,25 @@
 
 namespace App\Models;
 
+use Carbon\Traits\Date;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $idSupply
+ * @property string $brand
+ * @property string $code
+ * @property int $quantity
+ * @property Date $created_at
+ * @property PrinterModel[] $models
+ */
 class Supply extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     public $timestamps = false;
     protected $primaryKey = "idSupply";
@@ -20,18 +31,18 @@ class Supply extends Model
     }
 
     /**
-     * Scope a query to only include a minumum quantity.
+     * Scope a query to only include a minimum quantity.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  int  $quantityMin
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @param int|null $quantityMin
+     * @return Builder
      */
-    public function scopeMinqty($query, $quantityMin = null)
+    public function scopeMinqty(Builder $query, int $quantityMin = null): Builder
     {
         if ($quantityMin == null) {
             return $query;
         }
-        else{
+        else {
             return $query->where('quantity', '>=', $quantityMin);
         }
     }
@@ -39,16 +50,16 @@ class Supply extends Model
     /**
      * Scope a query to only include a maximum quantity.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  int  $quantityMax
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @param int|null $quantityMax
+     * @return Builder
      */
-    public function scopeMaxqty($query, $quantityMax = null)
+    public function scopeMaxqty(Builder $query, int $quantityMax = null): Builder
     {
         if ($quantityMax == null) {
             return $query;
         }
-        else{
+        else {
             return $query->where('quantity', '<=', $quantityMax);
         }
     }

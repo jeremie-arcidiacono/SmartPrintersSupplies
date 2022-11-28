@@ -2,16 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\View\View;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use App\Http\Controllers\api\EventController;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Validation\ValidationException;
 
@@ -20,7 +14,7 @@ class UserController extends Controller
     /**
      * Display the table view.
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function index(): View
     {
@@ -30,13 +24,13 @@ class UserController extends Controller
 
     public function toggleStatus(Request $request, User $user): RedirectResponse
     {
-        if ($user == Auth::user()) {
+        if ($user === Auth::user()) {
             // Cannot disable your own account
             throw ValidationException::withMessages([
                 'disable' => trans('auth.autoDisabled'),
             ]);
         }
-        else{
+        else {
             // This action will not disconnect the user if he is already logged in
             $user->status = !$user->status;
             $user->save();

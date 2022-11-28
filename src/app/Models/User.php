@@ -2,14 +2,26 @@
 
 namespace App\Models;
 
+use Carbon\Traits\Date;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+
+/**
+ * @property int $idUser
+ * @property string $username
+ * @property string $email
+ * @property string $password
+ * @property bool $status
+ * @property Date $created_at
+ */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
     public $timestamps = false;
     protected $primaryKey = "idUser";
