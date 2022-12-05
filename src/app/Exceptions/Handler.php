@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -41,10 +43,22 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        // Custom exception handling for 404 errors on API routes
+        $this->renderable(function (NotFoundHttpException $e, $request) {
+            if ($request->is('api/*')) {
+                if (!$request->route()) { // If the route does not exist
+                    return new JsonResponse(['message' => 'Endpoint not found'], 404);
+                }
+                else { // If the route exists but the model does not
+                    return new JsonResponse(['message' => 'Resource with the given ID not found'], 404);
+                }
+            }
         });
     }
 }
