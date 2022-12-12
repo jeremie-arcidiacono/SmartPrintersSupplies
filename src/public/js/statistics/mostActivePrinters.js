@@ -3,7 +3,12 @@ let startDate = $('#startDate').val();
 let endDate = $('#endDate').val();
 
 let mainChart = null;
-let links = [];
+let links = []; // Each printer that is displayed inside the chart has a link to the printer detail page
+
+/**
+ * Display the chart.
+ * @param {Object} pData
+ */
 function displayChart(pData) {
     pData = pData.data;
 
@@ -78,24 +83,37 @@ function displayChart(pData) {
     };
 }
 
-// Event - When the user change the amount of printers to display
-// Change the limit attribute and refresh the table
+/**
+ * Change the limit filter and refresh the chart.
+ * @param {int} newLimit
+ */
 function limitChanged(newLimit) {
     limit = newLimit;
     refresh();
 }
 
+/**
+ * Change the start date filter and refresh the chart.
+ * @param {string} newStartDate
+ */
 function startDateChanged(newStartDate) {
     startDate = newStartDate;
     refresh();
 }
 
+/**
+ * Change the end date filter and refresh the chart.
+ * @param {string} newEndDate
+ */
 function endDateChanged(newEndDate) {
     endDate = newEndDate;
     refresh();
 }
 
-function refresh(){
+/**
+ * Recall the API (with the new filters) and refresh the chart with the new data.
+ */
+function refresh() {
     let url = baseUrl;
 
     url += '?limit=' + limit;

@@ -1,49 +1,49 @@
 // Value for changing the displayed items (only for this table)
-var search = {};
+const search = {};
 
-// Generate the HTML DOM for the events table
+/**
+ * Generate the HTML for the events table
+ * @param {Object} data
+ */
 function displayEventsTable(data) {
-    var events = data.data;
-    var tableBody = $('#eventsTable_body');
+    const events = data.data;
+    const tableBody = $('#eventsTable_body');
     tableBody.empty();
 
-    if (events.length == 0) {
+    if (events.length === 0) {
+        // No events found
         tableBody.append(`<tr><td class="text-center" colspan="6">Aucun élément trouvé</td></tr>`);
-    }
-    else{
-        for (var i = 0; i < events.length; i++) {
-            var event = events[i];
-            var eventId = event.idEvent;
-            var eventDate = event.created_at;
-            var eventUser = event.author.username;
-            var eventSupplyId = event.target_supply.idSupply;
-            var eventSupplyName = event.target_supply.code;
-            var eventQuantity = event.amount;
+    } else {
+        for (let i = 0; i < events.length; i++) {
+            const event = events[i];
+            const eventId = event.idEvent;
+            const eventDate = event.created_at;
+            const eventUser = event.author.username;
+            const eventSupplyId = event.target_supply.idSupply;
+            const eventSupplyName = event.target_supply.code;
+            const eventQuantity = event.amount;
 
-            var htmlString = "<tr>";
+            let htmlString = "<tr>";
 
             htmlString += `<td>${eventId}</td>`;
             htmlString += `<td>${eventDate}</td>`;
             htmlString += `<td>${eventUser}</td>`;
 
-            if(event.target_printer != null){
-                var eventPrinterId = event.target_printer.idPrinter;
-                var eventPrinterCti = event.target_printer.cti;
+            if (event.target_printer != null) {
+                const eventPrinterId = event.target_printer.idPrinter;
+                const eventPrinterCti = event.target_printer.cti;
                 htmlString += `<td><a href="/printers/${eventPrinterId}/detail">${eventPrinterCti}</a></td>`;
-            }
-            else{
+            } else {
                 htmlString += `<td class="text-secondary">-</td>`;
             }
 
             htmlString += `<td><a href="/supplies/${eventSupplyId}/detail">${eventSupplyName}</a></td>`;
 
-            if (Math.sign(eventQuantity) == 1) {
+            if (Math.sign(eventQuantity) === 1) {
                 htmlString += `<td class="text-success">+${eventQuantity}</td>`;
-            }
-            else if (Math.sign(eventQuantity) == -1) {
+            } else if (Math.sign(eventQuantity) === -1) {
                 htmlString += `<td class="text-danger">${eventQuantity}</td>`;
-            }
-            else{
+            } else {
                 htmlString += `<td">${eventQuantity}</td>`;
             }
 
@@ -54,13 +54,16 @@ function displayEventsTable(data) {
     displayPagination(data);
 }
 
-function refreshTable(){
-    var url = baseUrl;
+/**
+ * Recall the API (with the new filters) and refresh the table with the new data.
+ */
+function refreshTable() {
+    let url = baseUrl;
 
     url += '&page=' + currentPage;
     url += '&perPage=' + perPage;
 
-    if (sortColumn != '') {
+    if (sortColumn !== '') {
         url += '&sort=' + sortColumn;
         url += '&dir=' + sortDir;
     }
@@ -68,7 +71,7 @@ function refreshTable(){
     if (search != null) {
         for (const column in search) {
             const searchValue = search[column];
-            if (searchValue != '') {
+            if (searchValue !== '') {
                 url += '&search[' + column + ']=' + searchValue;
             }
         }
@@ -77,13 +80,14 @@ function refreshTable(){
     callApiGet(url, displayEventsTable);
 }
 
-
+/**
+ * Change the search string for the given column and refresh the table.
+ * @param {string} searchField
+ */
 function searchChanged(searchField) {
     searchColumn = $(searchField).attr('id');
-    searchValue = $(searchField).val();
+    search[searchColumn] = $(searchField).val();
 
-    search[searchColumn] = searchValue;
-
-    currentPage = 1;
+    currentPage = 1; // Reset the page number
     refreshTable();
 }

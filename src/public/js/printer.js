@@ -1,9 +1,12 @@
-var printer = null;
+let printer = null;
 
-// Generate the HTML DOM for the printers table
+/**
+ * Generate the HTML tags for the printer details
+ * @param {Object} data
+ */
 function displayPrinterInfos(data) {
     printer = data.data;
-    
+
     $('#idPrinter').text(printer.idPrinter);
     $('#brand').text(printer.model.brand);
     $('#model').text(printer.model.name);
@@ -11,20 +14,23 @@ function displayPrinterInfos(data) {
     $('#serialNumber').text(printer.serialNumber);
     $('#cti').text(printer.cti);
 
-    var urlEdit = '/printers/' + printer.idPrinter + '/edit';
-    var urlDelete = '/api/printers/' + printer.idPrinter;
-    var printerActions = `<a href="${urlEdit}" class="btn btn-success btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
-    `<button class="btn btn-danger btn-xs" onclick="btnDeleteClicked(${printer.idPrinter}, '${urlDelete}', '/printers')"><i class="bi bi-trash3-fill"></i></button>`;
+    const urlEdit = '/printers/' + printer.idPrinter + '/edit';
+    const urlDelete = '/api/printers/' + printer.idPrinter;
+    const printerActions = `<a href="${urlEdit}" class="btn btn-success btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
+        `<button class="btn btn-danger btn-xs" onclick="btnDeleteClicked(${printer.idPrinter}, '${urlDelete}', '/printers')"><i class="bi bi-trash3-fill"></i></button>`;
 
     $('#actions').html(printerActions);
 
     if (printer.room == null) {
         $('#room').text('-');
     }
-    
+
     refreshTables();
 }
 
+/**
+ * Refresh the supplies tables and the events table and chart
+ */
 function refreshTables() {
     callApiGet(eventsUrl, displayEvents);
 
@@ -32,65 +38,87 @@ function refreshTables() {
     callApiGet(suppliesUrl, displaySuppliesTable);
 }
 
+/**
+ * Display the events table and the events chart
+ * @param {Object} data
+ */
 function displayEvents(data) {
-    var events = data.data;
+    const events = data.data;
     displayEventsTable(events.slice(0, nbEventsToDisplay)); // get the X first events
     displayEventsChart(events);
 }
 
+/**
+ * Generate the HTML tags for the events table
+ * The table contains the last X consumptions of supplies by the printer
+ * @param {Object} events
+ */
 function displayEventsTable(events) {
-    var tableBody = $('#eventsTable_body');
+    const tableBody = $('#eventsTable_body');
     tableBody.empty();
 
-    if (events.length == 0) {
+    if (events.length === 0) {
         tableBody.append(`<tr><td class="text-center" colspan="4">Aucun événement récent trouvé</td></tr>`);
-    }
-    else{
-        for (var i = 0; i < events.length; i++) {
-            var event = events[i];
-            var username = event.author.username;
-            var date = event.created_at;
-            var supplyCode = event.target_supply.code;
-            var amount = event.amount;
+    } else {
+        for (let i = 0; i < events.length; i++) {
+            const event = events[i];
+            const username = event.author.username;
+            const date = event.created_at;
+            const supplyCode = event.target_supply.code;
+            const amount = event.amount;
 
             tableBody.append(`<tr><td>${username}</td><td>${date}</td><td>${supplyCode}</td><td>${amount}</td></tr>`);
         }
     }
 }
 
+/**
+ * Generate the HTML tags for the supplies table
+ * The table contains the supplies that are used by the printer. It also contains a button to consume the supply
+ * @param {Object} data
+ */
 function displaySuppliesTable(data) {
-    var supplies = data.data;
-    var tableBody = $('#suppliesTable_body');
+    const supplies = data.data;
+    const tableBody = $('#suppliesTable_body');
     tableBody.empty();
 
-    if (supplies.length == 0) {
+    if (supplies.length === 0) {
         tableBody.append(`<tr><td class="text-center" colspan="4">Aucun fourniture compatible avec ce modèle d'imprimante</td></tr>`);
-    }
-    else{
-        for (var i = 0; i < supplies.length; i++) {
-            var supply = supplies[i];
-            var supplyId = supply.idSupply;
-            var code = supply.code;
+    } else {
+        for (let i = 0; i < supplies.length; i++) {
+            const supply = supplies[i];
+            const supplyId = supply.idSupply;
+            const code = supply.code;
 
-            var buttonHtml = `<button class="btn btn-primary btn-xs" onclick="btnConsumeClicked(${supplyId})"><i class="bi bi-box-arrow-in-down"></i></button>`;
+            const buttonHtml = `<button class="btn btn-primary btn-xs" onclick="btnConsumeClicked(${supplyId})"><i class="bi bi-box-arrow-in-down"></i></button>`;
 
             tableBody.append(`<tr><td>${supplyId}</td><td><a href="/supplies/${supplyId}/detail">${code}</a></td><td>${buttonHtml}</td></tr>`);
         }
     }
 }
 
+/**
+ * Send a request to the API to consume a supply by the printer
+ * @param {Number} supplyId - The id of the supply to consume
+ */
 function btnConsumeClicked(supplyId) {
-    var urlConsume = '/api/supplies/' + supplyId;
+    const urlConsume = '/api/supplies/' + supplyId;
 
-    var data = {
+    const data = {
         removeQuantity: 1,
-        idPrinter : printer.idPrinter
-    }
+        idPrinter: printer.idPrinter
+    };
 
     callApiPut(urlConsume, data, refreshTables);
 }
 
 let mainChart = null;
+
+/**
+ * Generate a pie chart with the events
+ * The chart show the amount of supplies that were consumed by the printer
+ * @param {Object} pData
+ */
 function displayEventsChart(pData) {
     // Ensure that the chart is destroyed before creating a new one
     if (mainChart != null) {
@@ -101,16 +129,15 @@ function displayEventsChart(pData) {
     ctx.clearRect(0, 0, ctx.width, ctx.height); // Clear the canvas before drawing the chart
 
     if (pData.length <= 0) {
-        return;
+        return; // No data to display : don't draw the chart
     }
 
-    var events = []; // Array as : ['supplies01' => 3, 'supplies4' => 1, ...]
+    const events = []; // Array as : ['supplies01' => 3, 'supplies4' => 1, ...]
     pData.forEach(event => {
         // Check if the key event.target_supply.code is already in the array
         if (event.target_supply.code in events) {
             events[event.target_supply.code] += Math.abs(event.amount);
-        }
-        else {
+        } else {
             events[event.target_supply.code] = 1;
         }
     });

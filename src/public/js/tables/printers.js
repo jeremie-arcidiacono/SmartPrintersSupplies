@@ -1,58 +1,60 @@
 // Value for changing the displayed items (only for this table)
-var search = '';
-var searchColumn = $('#searchColum').val();
+let search = '';
+let searchColumn = $('#searchColum').val();
 
-// Generate the HTML DOM for the printers table
+// For this table, the search is possible on many columns
+
+/**
+ * Generate the HTML tags for the printers table.
+ * @param {Object} data
+ */
 function displayPrintersTable(data) {
-    var printers = data.data;
-    var tableBody = $('#printersTable_body');
+    const printers = data.data;
+    const tableBody = $('#printersTable_body');
     tableBody.empty();
 
-    if (printers.length == 0) {
+    if (printers.length === 0) {
         tableBody.append(`<tr><td class="text-center" colspan="5">Aucun élément trouvé</td></tr>`);
-    }
-    else{
-        for (var i = 0; i < printers.length; i++) {
-            var printer = printers[i];
-            var printerId = printer.idPrinter;
-            var printerBrand = printer.model.brand;
-            var printerModel = printer.model.name;
-            var printerRoom = printer.room;
-            var printerSerialNumber = printer.serialNumber;
-            var printerCti = printer.cti;
+    } else {
+        for (let i = 0; i < printers.length; i++) {
+            const printer = printers[i];
+            const printerId = printer.idPrinter;
+            const printerBrand = printer.model.brand;
+            const printerModel = printer.model.name;
+            const printerRoom = printer.room ?? '-';
+            const printerSerialNumber = printer.serialNumber;
+            const printerCti = printer.cti;
 
-            if (printerRoom == null) {
-                printerRoom = '-';
-            }
-
-            var urlShow = '/printers/' + printerId + '/detail';
-            var urlEdit = '/printers/' + printerId + '/edit';
-            var urlDelete = '/api/printers/' + printerId;
-            var printerActions = `<a href="${urlShow}" class="btn btn-primary btn-xs"><i class="bi bi-eye-fill"></i></a>` +
-            `<a href="${urlEdit}" class="btn btn-success btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
-            `<button class="btn btn-danger btn-xs" onclick="btnDeleteClicked(${printerId}, '${urlDelete}')"><i class="bi bi-trash3-fill"></i></button>`;
+            const urlShow = '/printers/' + printerId + '/detail';
+            const urlEdit = '/printers/' + printerId + '/edit';
+            const urlDelete = '/api/printers/' + printerId;
+            const printerActions = `<a href="${urlShow}" class="btn btn-primary btn-xs"><i class="bi bi-eye-fill"></i></a>` +
+                `<a href="${urlEdit}" class="btn btn-success btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
+                `<button class="btn btn-danger btn-xs" onclick="btnDeleteClicked(${printerId}, '${urlDelete}')"><i class="bi bi-trash3-fill"></i></button>`;
             tableBody.append(`<tr><td>${printerId}</td><td>${printerBrand}</td><td>${printerModel}</td><td>${printerRoom}</td><td>${printerSerialNumber}</td><td>${printerCti}</td><td>${printerActions}</td></tr>`);
         }
     }
     displayPagination(data);
 }
 
-function refreshTable(){
-    var url = baseUrl;
+/**
+ * Recall the API (with the new filters) and refresh the table with the new data.
+ */
+function refreshTable() {
+    let url = baseUrl;
 
     url += '?page=' + currentPage;
     url += '&perPage=' + perPage;
 
-    if (search != '') {
-        if(searchColumn == 'model') {
+    if (search !== '') {
+        if (searchColumn === 'model') {
             url += '&searchModel=' + search;
-        }
-        else{
+        } else {
             url += '&search=' + search;
             url += '&searchColumn=' + searchColumn;
         }
     }
-    if (sortColumn != '') {
+    if (sortColumn !== '') {
         url += '&sort=' + sortColumn;
         url += '&dir=' + sortDir;
     }
@@ -60,7 +62,9 @@ function refreshTable(){
     callApiGet(url, displayPrintersTable);
 }
 
-
+/**
+ * Change the search string and refresh the table.
+ */
 function searchChanged() {
     searchColumn = $('#searchColumn').val();
     search = $('#search').val();
