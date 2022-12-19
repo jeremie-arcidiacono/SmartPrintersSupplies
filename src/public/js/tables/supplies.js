@@ -26,8 +26,8 @@ function displaySuppliesTable(data) {
             const urlShow = '/supplies/' + supplyId + '/detail';
             const urlEdit = '/supplies/' + supplyId + '/edit';
             const urlDelete = '/api/supplies/' + supplyId;
-            const modelActions = `<a href="${urlShow}" class="btn btn-primary btn-xs"><i class="bi bi-eye-fill"></i></a>` +
-                `<a href="${urlEdit}" class="btn btn-success btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
+            const modelActions = `<a href="${urlShow}" class="btn btn-primary btn-xs me-1"><i class="bi bi-eye-fill"></i></a>` +
+                `<a href="${urlEdit}" class="btn btn-success btn-xs me-1"><i class="bi bi-pencil-fill"></i></a>` +
                 `<button class="btn btn-danger btn-xs" onclick="btnDeleteClicked(${supplyId}, '${urlDelete}')"><i class="bi bi-trash3-fill"></i></button>`;
             tableBody.append(`<tr><td>${supplyId}</td><td>${supplyBrand}</td><td>${supplyCode}</td><td>${supplyQuantity}</td><td>${modelActions}</td></tr>`);
         }

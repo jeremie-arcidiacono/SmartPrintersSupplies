@@ -22,8 +22,8 @@ function displayModelsTable(data) {
 
             const urlEdit = '/models/' + modelId + '/edit';
             const urlDelete = '/api/models/' + modelId;
-            const modelActions = `<a href="${urlEdit}" class="btn btn-success btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
-                `<button class="btn btn-danger btn-xs" onclick="btnDeleteClicked(${modelId}, '${urlDelete}')"><i class="bi bi-trash3-fill"></i></button>`;
+            const modelActions = `<a href="${urlEdit}" class="btn btn-success btn-xs me-1"><i class="bi bi-pencil-fill"></i></a>` +
+                `<button class="btn btn-danger btn-xs me-1" onclick="btnDeleteClicked(${modelId}, '${urlDelete}')"><i class="bi bi-trash3-fill"></i></button>`;
             tableBody.append(`<tr><td>${modelId}</td><td>${modelBrand}</td><td>${modelName}</td><td>${modelActions}</td></tr>`);
         }
     }

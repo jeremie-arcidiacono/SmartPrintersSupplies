@@ -1,8 +1,8 @@
 <x-app-layout>
-    <x-delete-item />
+    <x-delete-item/>
 
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold fs-4 text-gray-800 leading-tight">
             {{ __("Imprimante : $idPrinter") }}
         </h2>
     </x-slot>
@@ -41,11 +41,11 @@
                 <h5 class="card-title">Consommables compatibles</h5>
                 <table class="table">
                     <thead class="table-light">
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Références</th>
-                            <th scope="col" style="max-width: 30px">Action</th>
-                        </tr>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Références</th>
+                        <th scope="col" style="max-width: 30px">Action</th>
+                    </tr>
                     </thead>
                     <tbody class="table-group-divider" id="suppliesTable_body"></tbody>
                 </table>
@@ -62,12 +62,12 @@
                 <h5 class="card-title">{{ config('modelQuery.printer_nbEvent') }} derniers consommables utilisés</h5>
                 <table class="table">
                     <thead class="table-light">
-                        <tr>
-                            <th scope="col">Utilisateur</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Consommable</th>
-                            <th scope="col">Nombre</th>
-                        </tr>
+                    <tr>
+                        <th scope="col">Utilisateur</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Consommable</th>
+                        <th scope="col">Nombre</th>
+                    </tr>
                     </thead>
                     <tbody class="table-group-divider" id="eventsTable_body"></tbody>
                 </table>

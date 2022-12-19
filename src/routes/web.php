@@ -87,10 +87,6 @@ Route::prefix('statistics')->group(function () {
     })->middleware(['auth'])->name('statistics.mostActivePrinters');
 });
 
-Route::get('/users', function () {
-    return view('tables.users');
-})->middleware(['auth'])->name('users.index');
-
 Route::get('/users', [UserController::class, 'index'])->middleware(['auth'])->name('users.index');
 Route::patch('/users/{user}/toggleStatus', [UserController::class, 'toggleStatus'])->middleware(['auth'])->name('users.toggleStatus');
 
@@ -99,4 +95,4 @@ Route::get('/users/create', function () {
 })->middleware(['auth'])->name('users.create');
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

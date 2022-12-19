@@ -66,7 +66,9 @@ function displayChart(pData) {
                         size: 15
                     }
                 }
-            }
+            },
+            maintainAspectRatio: false,
+            responsive: true,
         },
 
     };

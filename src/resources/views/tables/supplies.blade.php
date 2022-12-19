@@ -1,8 +1,8 @@
 <x-app-layout>
-    <x-delete-item />
+    <x-delete-item/>
 
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold fs-4 text-gray-800 leading-tight">
             {{ __("Consommables") }}
         </h2>
     </x-slot>
@@ -16,7 +16,7 @@
         <!-- Number of rows -->
         <div class="w-25 px-3 float-start">
             <label>Afficher </label>
-            <select class="form-control-sm" id="perPage" onchange="perPageChanged(this.value)">
+            <select class="form-control-sm pe-4" id="perPage" onchange="perPageChanged(this.value)">
                 <option value="10">10</option>
                 <option value="25" selected="selected">25</option>
                 <option value="50">50</option>
@@ -29,18 +29,21 @@
             <div>
                 <span>Rechercher dans la colonne : Référence</span>
             </div>
-            <input type="text" class="form-control mt-2" placeholder="Rechercher..." id="search" style="max-width: 370px;" oninput="searchChanged()">
+            <input type="text" class="form-control mt-2" placeholder="Rechercher..." id="search"
+                   style="max-width: 370px;" oninput="searchChanged()">
             <hr>
             <div>
                 <label for="quantityMin">Quantité minimum :</label>
-                <input type="number" class="form-control" id="quantityMin" placeholder="0" min="0" style="max-width: 370px;" oninput="searchChanged()">
-                
+                <input type="number" class="form-control" id="quantityMin" placeholder="0" min="0"
+                       style="max-width: 370px;" oninput="searchChanged()">
+
                 <label for="quantityMax">Quantité maximum :</label>
-                <input type="number" class="form-control" id="quantityMax" placeholder="99999" min="0" style="max-width: 370px;" oninput="searchChanged()">
+                <input type="number" class="form-control" id="quantityMax" placeholder="99999" min="0"
+                       style="max-width: 370px;" oninput="searchChanged()">
 
                 <div class="alert alert-danger visually-hidden" role="alert" id="quantityError">
                     Problème de saisie ! Vérifiez que les champs de quantités contiennent uniquement des nombres.
-                </div>                  
+                </div>
             </div>
         </div>
     </div>
@@ -49,32 +52,32 @@
     <div class="">
         <table class="table" id="suppliesTable">
             <thead class="table-light">
-                <tr>
-                    <th scope="col" onclick="sortChanged('idSupply')">#
-                        <i class="bi bi-arrow-up ps-1" id="sort_up_idSupply" style="color: rgb(183, 183, 207);"></i>
-                        <i class="bi bi-arrow-down" id="sort_down_idSupply" style="color: rgb(183, 183, 207);"></i>
-                    </th>
-                    <th scope="col" onclick="sortChanged('brand')">Marque
-                        <i class="bi bi-arrow-up ps-1" id="sort_up_brand" style="color: rgb(183, 183, 207);"></i>
-                        <i class="bi bi-arrow-down" id="sort_down_brand" style="color: rgb(183, 183, 207);"></i>
-                    </th>
-                    <th scope="col" onclick="sortChanged('code')">Référence
-                        <i class="bi bi-arrow-up ps-1" id="sort_up_code" style="color: rgb(183, 183, 207);"></i>
-                        <i class="bi bi-arrow-down" id="sort_down_code" style="color: rgb(183, 183, 207);"></i>
-                    </th>
-                    <th scope="col" onclick="sortChanged('quantity')">Quantité
-                        <i class="bi bi-arrow-up ps-1" id="sort_up_quantity" style="color: rgb(183, 183, 207);"></i>
-                        <i class="bi bi-arrow-down" id="sort_down_quantity"style="color: rgb(183, 183, 207);"></i>
-                    </th>
-                    <th scope="col">Actions</th>
-                </tr>
+            <tr>
+                <th scope="col" onclick="sortChanged('idSupply')">#
+                    <i class="bi bi-arrow-up ps-1" id="sort_up_idSupply" style="color: rgb(183, 183, 207);"></i>
+                    <i class="bi bi-arrow-down" id="sort_down_idSupply" style="color: rgb(183, 183, 207);"></i>
+                </th>
+                <th scope="col" onclick="sortChanged('brand')">Marque
+                    <i class="bi bi-arrow-up ps-1" id="sort_up_brand" style="color: rgb(183, 183, 207);"></i>
+                    <i class="bi bi-arrow-down" id="sort_down_brand" style="color: rgb(183, 183, 207);"></i>
+                </th>
+                <th scope="col" onclick="sortChanged('code')">Référence
+                    <i class="bi bi-arrow-up ps-1" id="sort_up_code" style="color: rgb(183, 183, 207);"></i>
+                    <i class="bi bi-arrow-down" id="sort_down_code" style="color: rgb(183, 183, 207);"></i>
+                </th>
+                <th scope="col" onclick="sortChanged('quantity')">Quantité
+                    <i class="bi bi-arrow-up ps-1" id="sort_up_quantity" style="color: rgb(183, 183, 207);"></i>
+                    <i class="bi bi-arrow-down" id="sort_down_quantity" style="color: rgb(183, 183, 207);"></i>
+                </th>
+                <th scope="col">Actions</th>
+            </tr>
             </thead>
             <tbody class="table-group-divider" id="suppliesTable_body">
-                
+
             </tbody>
         </table>
 
-        <nav >
+        <nav>
             <ul class="pagination" id="paginationContainers"></ul>
         </nav>
     </div>
@@ -83,7 +86,7 @@
     <script src="{{ asset('js/tables/supplies.js') }}"></script>
     <script>
         var baseUrl = "{{ route('api.supplies.index') }}"
-        $(document).ready(function() {
+        $(document).ready(function () {
             callApiGet(baseUrl, displaySuppliesTable);
         });
     </script>

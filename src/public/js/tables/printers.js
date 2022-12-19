@@ -28,8 +28,8 @@ function displayPrintersTable(data) {
             const urlShow = '/printers/' + printerId + '/detail';
             const urlEdit = '/printers/' + printerId + '/edit';
             const urlDelete = '/api/printers/' + printerId;
-            const printerActions = `<a href="${urlShow}" class="btn btn-primary btn-xs"><i class="bi bi-eye-fill"></i></a>` +
-                `<a href="${urlEdit}" class="btn btn-success btn-xs"><i class="bi bi-pencil-fill"></i></a>` +
+            const printerActions = `<a href="${urlShow}" class="btn btn-primary btn-xs me-1"><i class="bi bi-eye-fill"></i></a>` +
+                `<a href="${urlEdit}" class="btn btn-success btn-xs me-1"><i class="bi bi-pencil-fill"></i></a>` +
                 `<button class="btn btn-danger btn-xs" onclick="btnDeleteClicked(${printerId}, '${urlDelete}')"><i class="bi bi-trash3-fill"></i></button>`;
             tableBody.append(`<tr><td>${printerId}</td><td>${printerBrand}</td><td>${printerModel}</td><td>${printerRoom}</td><td>${printerSerialNumber}</td><td>${printerCti}</td><td>${printerActions}</td></tr>`);
         }
