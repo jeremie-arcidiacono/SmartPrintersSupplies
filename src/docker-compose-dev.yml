@@ -2,9 +2,10 @@
 # This file create the development environment.
 version: '3'
 services:
-    laravel.app:
+    laravel:
+        container_name: 'laravel'
         build:
-            context: ./vendor/laravel/sail/runtimes/8.1
+            context: ./docker/8.1
             dockerfile: Dockerfile
             args:
                 WWWGROUP: '${WWWGROUP}'
@@ -27,6 +28,7 @@ services:
         depends_on:
             - mysql
     mysql:
+        container_name: mysql
         image: 'mysql/mysql-server:8.0'
         ports:
             - '${FORWARD_DB_PORT:-3306}:3306'
@@ -52,6 +54,4 @@ networks:
         driver: bridge
 volumes:
     sail-mysql:
-        driver: local
-    sail-meilisearch:
         driver: local

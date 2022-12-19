@@ -92,7 +92,7 @@ class SupplyController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'brand' => ['required', 'string', 'max:20'],
-            'code' => ['required', 'string', 'max:20', 'unique:supplies'],
+            'code' => ['required', 'string', 'max:60', 'unique:supplies'],
             'quantity' => ['required', 'integer', 'min:0']
         ]);
 
@@ -130,7 +130,7 @@ class SupplyController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'brand' => ['string', 'max:20'],
-            'code' => ['string', 'max:20', Rule::unique('supplies')->ignore($supply)],
+            'code' => ['string', 'max:60', Rule::unique('supplies')->ignore($supply)],
             'quantity' => ['integer', 'min:0'],
             'addQuantity' => ['integer', 'min:0'],
             'removeQuantity' => ['integer', 'min:0'],
