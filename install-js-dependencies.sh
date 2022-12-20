@@ -17,3 +17,4 @@ sudo curl -sS -o "$JSDIR/randomColor.js" https://raw.githubusercontent.com/david
 
 
 echo "Done installing javascript project dependencies."
+exit 0
